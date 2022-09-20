@@ -56,7 +56,7 @@ class MenuState extends FlxState
 	override public function create()
 	{
 		super.create();
-		FlxAssets.FONT_DEFAULT = 'assets/fonts/osd_vcr.ttf';
+		FlxAssets.FONT_DEFAULT = 'assets/fonts/pixel.ttf';
 
 		bgColor = FlxColor.GRAY;
 
@@ -64,6 +64,7 @@ class MenuState extends FlxState
 		barBottom = new FlxSprite(0, FlxG.height - FlxG.height / 8).makeGraphic(FlxG.width, Std.int(FlxG.height / 8), FlxColor.BLACK);
 
 		feed = new FlxTypeText(0, 0, 0, "FEED", 64);
+		feed.font = 'assets/fonts/osd_vcr.ttf';
 		feed.cursorCharacter = '_';
 		feed.showCursor = true;
 		feed.eraseDelay = feed.delay = .1;
@@ -81,7 +82,7 @@ class MenuState extends FlxState
 
 		for (i in 0...menuItems.length)
 		{
-			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, menuItems[i].label, 24);
+			var txt = new MenuItem(20, feed.y - 11 + feed.height + (36 * i), 0, menuItems[i].label, 48);
 			grpItem.add(txt);
 			txt.setBorderStyle(SHADOW, FlxColor.BLACK, 2, 1);
 			txt.ID = i;
@@ -104,7 +105,7 @@ class MenuState extends FlxState
 		}
 		for (i in 0...options.length)
 		{
-			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, options[i].label, 24);
+			var txt = new MenuItem(20, feed.y - 11 + feed.height + (36 * i), 0, options[i].label, 48);
 			grpOptions.add(txt);
 			txt.setBorderStyle(SHADOW, FlxColor.BLACK, 2, 1);
 			txt.ID = i;
@@ -239,6 +240,8 @@ class MenuState extends FlxState
 
 	function select()
 	{
+		if (curSel >= selectGrp.members.length || curSel < 0)
+			return;
 		var curItem = selectGrp.members[curSel];
 		curItem.onInteract();
 	}
