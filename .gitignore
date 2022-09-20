@@ -1,3 +1,4 @@
 export/
 export\
 .DS_Store
+.vscode/tasks.json

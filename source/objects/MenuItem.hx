@@ -1,10 +1,11 @@
 package objects;
 
+import util.Text;
 import flixel.math.FlxMath;
 import flixel.FlxG;
 import flixel.text.FlxText; #if hscript import flixel.system.debug.console.ConsoleUtil; #end
 
-class MenuItem extends FlxText
+class MenuItem extends Text
 {
 	public var onInteract:() -> Void;
 	public var onLeft:() -> Void;

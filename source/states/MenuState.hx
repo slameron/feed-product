@@ -13,6 +13,8 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import objects.DialogueBox;
 import objects.MenuItem;
+import openfl.display.StageQuality;
+import openfl.filters.ShaderFilter;
 
 using StringTools;
 
@@ -36,6 +38,9 @@ class MenuState extends FlxState
 	override public function create()
 	{
 		super.create();
+		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
+		FlxG.game.stage.quality = StageQuality.LOW;
+
 
 		var bg = new FlxSprite().loadGraphic('assets/images/menuroom.png');
 		bg.scale.set(4, 4);
@@ -63,19 +68,10 @@ class MenuState extends FlxState
 				{label: 'Start Story', onPress: () -> FlxG.switchState(new PlayState())},
 				{
 					label: 'Test Dialogue',
-					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "My Name Is Cleveland Brown
-And I Am Proud To Be
-Right Back In My Home Town
-With My New Family
-There's Old Friends & New Friends & Even a Bear
-Through Good Times & Bad Times
-Its True Love To Share
-And So I Found A Place
-Where Everyone Will Know
-My Happy Mustache Face
-This Is The Cleveland Show!", 'speaker', true))
+					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "yooooooo", 'speaker', true))
 				},
 				{label: 'Options'}
+				#if desktop, {label: 'Exit', onPress: () -> Sys.exit(0)} #end
 			];
 		var options:Array<
 			{
@@ -111,26 +107,25 @@ This Is The Cleveland Show!", 'speaker', true))
 						// FlxG.sound.changeVolume(.1);
 					},
 					track: "FlxG.sound.volume"
-				}, /*
-					{
-						label: "Sound Volume",
-						onLeft: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol - .1, 0, 1), 1),
-						onRight: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol + .1, 0, 1), 1),
-						track: "FlxG.save.data.sndVol"
-					},
-					{
-						label: "Music Volume",
-						onLeft: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol - .1, 0, 1), 1),
-						onRight: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol + .1, 0, 1), 1),
-						track: "FlxG.save.data.musVol"
-					},
-				 */
+				},
+				{
+					label: "Sound Volume",
+					onLeft: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol - .1, 0, 1), 1),
+					onRight: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol + .1, 0, 1), 1),
+					track: "FlxG.save.data.sndVol"
+				},
+				{
+					label: "Music Volume",
+					onLeft: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol - .1, 0, 1), 1),
+					onRight: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol + .1, 0, 1), 1),
+					track: "FlxG.save.data.musVol"
+				},
+
 				{
 					label: 'Go back'
 				}
 			];
 
-		FlxAssets.FONT_DEFAULT = 'assets/fonts/osd_vcr.ttf';
 
 		bgColor = FlxColor.GRAY;
 
@@ -156,7 +151,7 @@ This Is The Cleveland Show!", 'speaker', true))
 		for (i in 0...menuItems.length)
 		{
 			var data = menuItems[i];
-			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 24);
+			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 32);
 			grpItem.add(txt);
 			txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2, 1);
 
@@ -188,7 +183,7 @@ This Is The Cleveland Show!", 'speaker', true))
 		for (i in 0...options.length)
 		{
 			var data = options[i];
-			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 24);
+			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 32);
 			grpOptions.add(txt);
 			txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2, 1);
 			txt.ID = i;

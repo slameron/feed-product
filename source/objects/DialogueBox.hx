@@ -19,20 +19,20 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 	var txt:FlxTypeText;
 	var spkr:FlxText;
 
-	override public function new(x:Float = 0, y:Float = 0, text:String = '', size:Int = 24, ?speaker:String, cinematic:Bool = false)
+	override public function new(x:Float = 0, y:Float = 0, text:String = '', size:Int = 32, ?speaker:String, cinematic:Bool = false)
 	{
 		super();
 
 		var fieldW:Int = Std.int(FlxG.width - x - FlxG.random.int(30, 80));
 		if (cinematic)
 		{
-			size = 24;
+			size = 32;
 			x = 50;
 
 			fieldW = Std.int(FlxG.width - 100);
 		}
 		fieldW -= size;
-		txt = new FlxTypeText(x + (size / 2), y + (size / 4) + 5, fieldW, text, 18);
+		txt = new FlxTypeText(x + (size / 2), y + (size / 4) + 4, fieldW, text, size);
 		txt.text = text;
 		if (cinematic)
 		{
@@ -43,11 +43,14 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 		txt.useDefaultSound = false;
 		txt.finishSounds = true;
 		txt.sounds = [
-			for (i in 0...10) new FlxSound().loadEmbedded(Assets.sound('sound_scoretally', '.wav'))
+			for (i in 0...10)
+				new FlxSound().loadEmbedded(Assets.sound('sound_scoretally', '.wav'))
 		];
-		bg = new FlxUI9SliceSprite(x, y, 'assets/images/diaslice.png', new Rectangle(0, 0, txt.width + size, txt.height + (size / 2) + 10),
+		bg = new FlxUI9SliceSprite(x, y, 'assets/images/diaslice.png', new Rectangle(0, 0, txt.width + size, txt.height + (size / 2) + 8),
 			[8 * 3, 8 * 3, 15 * 3, 15 * 3]);
+		txt.setPosition(bg.x + bg.width / 2 - txt.width / 2, bg.y + bg.height / 2 - txt.height / 2);
 		txt.text = "";
+
 		add(bg);
 
 		bg.scale.set(0, 0);
