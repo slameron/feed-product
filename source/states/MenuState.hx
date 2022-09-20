@@ -5,11 +5,13 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.text.FlxTypeText;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
 import flixel.system.FlxAssets;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
+import objects.DialogueBox;
 import objects.MenuItem;
 
 using StringTools;
@@ -26,37 +28,109 @@ class MenuState extends FlxState
 	var selectGrp:FlxTypedGroup<MenuItem>;
 
 	var inMenu:Bool = true; // False would mean actively in options.
-	var menuItems:Array<
-		{
-			label:String,
-			?type:String,
-			?df:Dynamic,
-			?onPress:() -> Void
-		}> = [
-			{label: 'Start Story', onPress: () -> FlxG.switchState(new PlayState())},
-			{label: 'Options'}
-		];
-	var options:Array<
-		{
-			label:String,
-			?type:String,
-			?df:Dynamic,
-			?onPress:() -> Void
-		}> = [
-			{
-				label: "Fullscreen",
-				df: FlxG.fullscreen,
-				onPress: () -> FlxG.fullscreen = !FlxG.fullscreen
-			},
-			{label: 'Go back'}
-		];
+
 	var ready:Bool = false;
 	var feed:FlxTypeText;
+	var wires:FlxSprite;
 
 	override public function create()
 	{
 		super.create();
-		FlxAssets.FONT_DEFAULT = 'assets/fonts/pixel.ttf';
+
+		var bg = new FlxSprite().loadGraphic('assets/images/menuroom.png');
+		bg.scale.set(4, 4);
+		add(bg);
+		bg.screenCenter();
+
+		wires = new FlxSprite().loadGraphic('assets/images/wires.png', true, 13, 11);
+		wires.animation.add('reg', [0]);
+		wires.animation.add('spark', [for (i in 1...12) i], 8, false);
+		wires.animation.play("reg");
+
+		add(wires);
+		wires.scale.set(4, 4);
+		wires.setPosition(404, 160);
+
+		var menuItems:Array<
+			{
+				label:String,
+				?type:String,
+				?track:Dynamic,
+				?onPress:() -> Void,
+				?onLeft:() -> Void,
+				?onRight:() -> Void
+			}> = [
+				{label: 'Start Story', onPress: () -> FlxG.switchState(new PlayState())},
+				{
+					label: 'Test Dialogue',
+					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "My Name Is Cleveland Brown
+And I Am Proud To Be
+Right Back In My Home Town
+With My New Family
+There's Old Friends & New Friends & Even a Bear
+Through Good Times & Bad Times
+Its True Love To Share
+And So I Found A Place
+Where Everyone Will Know
+My Happy Mustache Face
+This Is The Cleveland Show!", 'speaker', true))
+				},
+				{label: 'Options'}
+			];
+		var options:Array<
+			{
+				label:String,
+				?type:String,
+				?track:Dynamic,
+				?onPress:() -> Void,
+				?onLeft:() -> Void,
+				?onRight:() -> Void,
+				?onChange:Dynamic->Void
+			}> = [
+				{
+					label: "Fullscreen",
+					track: "FlxG.fullscreen",
+					onPress: () ->
+					{
+						FlxG.fullscreen = !FlxG.fullscreen;
+						FlxG.save.data.fullscreen = FlxG.fullscreen;
+					}
+				},
+				{
+					label: "Master Volume",
+					onLeft: () ->
+					{
+						FlxG.save.data.volume = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.volume - .1, 0, 1), 1);
+						FlxG.sound.volume = FlxG.save.data.volume;
+						// FlxG.sound.changeVolume(-.1);
+					},
+					onRight: () ->
+					{
+						FlxG.save.data.volume = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.volume + .1, 0, 1), 1);
+						FlxG.sound.volume = FlxG.save.data.volume;
+						// FlxG.sound.changeVolume(.1);
+					},
+					track: "FlxG.sound.volume"
+				}, /*
+					{
+						label: "Sound Volume",
+						onLeft: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol - .1, 0, 1), 1),
+						onRight: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol + .1, 0, 1), 1),
+						track: "FlxG.save.data.sndVol"
+					},
+					{
+						label: "Music Volume",
+						onLeft: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol - .1, 0, 1), 1),
+						onRight: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol + .1, 0, 1), 1),
+						track: "FlxG.save.data.musVol"
+					},
+				 */
+				{
+					label: 'Go back'
+				}
+			];
+
+		FlxAssets.FONT_DEFAULT = 'assets/fonts/osd_vcr.ttf';
 
 		bgColor = FlxColor.GRAY;
 
@@ -64,7 +138,6 @@ class MenuState extends FlxState
 		barBottom = new FlxSprite(0, FlxG.height - FlxG.height / 8).makeGraphic(FlxG.width, Std.int(FlxG.height / 8), FlxColor.BLACK);
 
 		feed = new FlxTypeText(0, 0, 0, "FEED", 64);
-		feed.font = 'assets/fonts/osd_vcr.ttf';
 		feed.cursorCharacter = '_';
 		feed.showCursor = true;
 		feed.eraseDelay = feed.delay = .1;
@@ -82,12 +155,21 @@ class MenuState extends FlxState
 
 		for (i in 0...menuItems.length)
 		{
-			var txt = new MenuItem(20, feed.y - 11 + feed.height + (36 * i), 0, menuItems[i].label, 48);
+			var data = menuItems[i];
+			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 24);
 			grpItem.add(txt);
-			txt.setBorderStyle(SHADOW, FlxColor.BLACK, 2, 1);
+			txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2, 1);
+
 			txt.ID = i;
 
-			txt.onInteract = menuItems[i].onPress;
+			if (data.onPress != null)
+				txt.onInteract = data.onPress;
+			if (data.onLeft != null)
+				txt.onLeft = data.onLeft;
+			if (data.onRight != null)
+				txt.onRight = data.onRight;
+			if (data.track != null)
+				txt.track = data.track;
 			if (txt.text == 'Options')
 				txt.onInteract = gotoOptions;
 
@@ -105,14 +187,24 @@ class MenuState extends FlxState
 		}
 		for (i in 0...options.length)
 		{
-			var txt = new MenuItem(20, feed.y - 11 + feed.height + (36 * i), 0, options[i].label, 48);
+			var data = options[i];
+			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 24);
 			grpOptions.add(txt);
-			txt.setBorderStyle(SHADOW, FlxColor.BLACK, 2, 1);
+			txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2, 1);
 			txt.ID = i;
 
-			txt.onInteract = options[i].onPress;
+			if (data.onPress != null)
+				txt.onInteract = data.onPress;
+			if (data.onLeft != null)
+				txt.onLeft = data.onLeft;
+			if (data.onRight != null)
+				txt.onRight = data.onRight;
+			if (data.track != null)
+				txt.track = data.track;
 			if (txt.text == 'Go back')
 				txt.onInteract = gotoMenu;
+
+			txt.update(0);
 
 			var curX = txt.x;
 			txt.x = 0 - txt.width - 1;
@@ -130,6 +222,10 @@ class MenuState extends FlxState
 		@:privateAccess
 		FlxG.watch.addQuick('text', feed._finalText);
 		FlxG.watch.addQuick('ready', ready);
+		FlxG.watch.addQuick('cursel', curSel);
+
+		if (FlxG.random.bool(.25))
+			wires.animation.play('spark');
 
 		if (!ready)
 			return;
@@ -166,6 +262,15 @@ class MenuState extends FlxState
 			change(-1);
 		if (FlxG.keys.anyJustPressed([SPACE, ENTER]))
 			select();
+
+		if (curSel >= 0 && curSel < selectGrp.members.length)
+		{
+			if (FlxG.keys.anyJustPressed([LEFT, A]))
+				selectGrp.members[curSel].change(true);
+
+			if (FlxG.keys.anyJustPressed([RIGHT, D]))
+				selectGrp.members[curSel].change();
+		}
 	}
 
 	function change(amt:Int)
@@ -176,6 +281,8 @@ class MenuState extends FlxState
 			curSel = 0;
 		else if (curSel < 0)
 			curSel = selectGrp.members.length - 1;
+
+		FlxG.sound.play(Assets.sound('menuChange'));
 	}
 
 	function gotoMenu()
@@ -228,9 +335,6 @@ class MenuState extends FlxState
 
 	function updateTitle(title:String)
 	{
-		if (curSel >= menuItems.length || curSel < 0)
-			return;
-		var daSel = curSel;
 		feed.erase(null, false, null, () ->
 		{
 			feed.resetText(title.toUpperCase());
@@ -242,7 +346,8 @@ class MenuState extends FlxState
 	{
 		if (curSel >= selectGrp.members.length || curSel < 0)
 			return;
+
 		var curItem = selectGrp.members[curSel];
-		curItem.onInteract();
+		curItem.press();
 	}
 }
