@@ -18,7 +18,7 @@ import openfl.filters.ShaderFilter;
 
 using StringTools;
 
-class MenuState extends FlxState
+class MenuState extends DefaultState
 {
 	var barTop:FlxSprite;
 	var barBottom:FlxSprite;
@@ -40,7 +40,6 @@ class MenuState extends FlxState
 		super.create();
 		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
 		FlxG.game.stage.quality = StageQuality.LOW;
-
 
 		var bg = new FlxSprite().loadGraphic('assets/images/menuroom.png');
 		bg.scale.set(4, 4);
@@ -125,7 +124,6 @@ class MenuState extends FlxState
 					label: 'Go back'
 				}
 			];
-
 
 		bgColor = FlxColor.GRAY;
 
@@ -277,7 +275,7 @@ class MenuState extends FlxState
 		else if (curSel < 0)
 			curSel = selectGrp.members.length - 1;
 
-		FlxG.sound.play(Assets.sound('menuChange'));
+		Sound.play('menuChange');
 	}
 
 	function gotoMenu()

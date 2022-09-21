@@ -44,7 +44,7 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 		txt.finishSounds = true;
 		txt.sounds = [
 			for (i in 0...10)
-				new FlxSound().loadEmbedded(Assets.sound('sound_scoretally', '.wav'))
+				Sound.dialogueSound('sound_scoretally', .3)
 		];
 		bg = new FlxUI9SliceSprite(x, y, 'assets/images/diaslice.png', new Rectangle(0, 0, txt.width + size, txt.height + (size / 2) + 8),
 			[8 * 3, 8 * 3, 15 * 3, 15 * 3]);

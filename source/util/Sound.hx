@@ -3,20 +3,27 @@ package util;
 import flixel.FlxObject;
 import flixel.system.FlxSound;
 
+class CustomMus extends FlxSound
+{
+	/**just the original volume before mapped to three channels**/
+	public var normal:Float = 1;
+}
+
 class Sound
 {
 	public static var panRadius:Float = 150;
 
-	static var sounds:Array<FlxSound> = [];
-	static var musics:Array<FlxSound> = [];
+	static var sounds:Array<CustomMus> = [];
+	static var musics:Array<CustomMus> = [];
 
 	public static var menuMusic:FlxSound;
 	public static var gameMus:FlxSound;
 
-	public static function play(key:String, ?source:FlxObject, ?playa:FlxObject):FlxSound
+	public static function play(key:String, vol:Float = 1, ?source:FlxObject, ?playa:FlxObject):CustomMus
 	{
-		var newSound = new FlxSound().loadEmbedded(RetPath.sound(key));
-		newSound.volume = FlxG.save.data.soundVolume * FlxG.save.data.masterVolume;
+		var newSound:CustomMus = new CustomMus();
+		newSound.loadEmbedded(RetPath.sound(key));
+		newSound.volume = vol * FlxG.save.data.sndVol * FlxG.sound.volume;
 		if (key == 'fire_shotgun')
 			newSound.volume *= .4;
 
@@ -33,13 +40,23 @@ class Sound
 		return newSound;
 	}
 
-	public static function playMusic(key:String):FlxSound
+	public static function dialogueSound(key:String, vol:Float = 1, extension:String = '.wav'):CustomMus
 	{
-		var newSound = new FlxSound().loadEmbedded(RetPath.music(key), true);
+		var newSound:CustomMus = new CustomMus();
+		newSound.loadEmbedded(Assets.sound(key, extension));
+		newSound.volume = vol * FlxG.save.data.sndVol * FlxG.sound.volume;
 
+		return newSound;
+	}
+
+	public static function playMusic(key:String, vol:Float = 1, persist:Bool = true):CustomMus
+	{
+		var newSound:CustomMus = new CustomMus();
+		newSound.loadEmbedded(RetPath.music(key), true);
+		newSound.normal = vol;
 		newSound.play();
 		newSound.update(0);
-		newSound.persist = true;
+		newSound.persist = persist;
 
 		musics.push(newSound);
 
@@ -55,7 +72,9 @@ class Sound
 			if (sound != null)
 			{
 				sound.update(elapsed);
-				sound.volume = FlxG.save.data.musicVolume * FlxG.save.data.masterVolume;
+				sound.volume = sound.normal * FlxG.save.data.musVol * FlxG.sound.volume;
 			}
+			else
+				musics.remove(sound);
 	}
 }

@@ -28,7 +28,7 @@ class MenuItem extends Text
 		if (onInteract != null)
 		{
 			onInteract();
-			FlxG.sound.play(Assets.sound('menuSelect'));
+			Sound.play('menuSelect');
 		}
 
 		FlxG.save.flush();
@@ -58,14 +58,14 @@ class MenuItem extends Text
 			if (onLeft != null)
 			{
 				onLeft();
-				FlxG.sound.play(Assets.sound('menuChange'));
+				Sound.play('menuChange');
 			}
 
 		if (!left)
 			if (onRight != null)
 			{
 				onRight();
-				FlxG.sound.play(Assets.sound('menuChange'));
+				Sound.play('menuChange');
 			}
 
 		FlxG.save.flush();
