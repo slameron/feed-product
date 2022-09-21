@@ -3,8 +3,12 @@ package states;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.text.FlxTypeText;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.addons.transition.TransitionData;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxAssets;
 import flixel.system.FlxSound;
+import lime.app.Application;
 import openfl.filters.ShaderFilter;
 
 class Setup extends DefaultState
@@ -23,6 +27,8 @@ class Setup extends DefaultState
 	override public function create()
 	{
 		super.create();
+
+		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, .25, new FlxPoint(1, 1));FlxTransitionableState.defaultTransOut = FlxTransitionableState.defaultTransIn;
 
 		FlxG.save.bind('FEED_PRODUCT');
 		FlxG.log.redirectTraces = true;
@@ -51,7 +57,7 @@ class Setup extends DefaultState
 			trace(json.loc);
 			if (json.loc == null)
 			{
-				connectionlessText = 'internet connection failed. please check your hardware and try again later.';
+				connectionlessText = 'feednet connection failed. please check your network connection and try again later.';
 				setupTxt();
 				trace('json.loc is null or somethi...');
 				return;
@@ -72,7 +78,7 @@ class Setup extends DefaultState
 			}
 			http2.onError = function(error)
 			{
-				connectionlessText = 'internet connection failed. please check your hardware and try again later.';
+				connectionlessText = 'feednet connection failed. please check your network connection and try again later.';
 				setupTxt();
 			}
 			http2.request();
@@ -80,25 +86,40 @@ class Setup extends DefaultState
 
 		http.onError = function(error)
 		{
-			connectionlessText = 'internet connection failed. please check your hardware and try again later.';
+			connectionlessText = 'feednet connection failed. please check your network connection and try again later.';
 			setupTxt();
 		}
 
 		http.request();
+
+		vcrGrp = new FlxTypedGroup();
+		add(vcrGrp);
+		for (i in 0...FlxG.height + 8) // +8 to ensure an extra line gets added, otherwise there may be a small gap
+		{
+			if (i % 8 != 0)
+				continue;
+
+			var vcrLine = new FlxSprite().makeGraphic(FlxG.width, 1, FlxColor.BLACK);
+			vcrGrp.add(vcrLine);
+			vcrLine.y = i;
+			vcrLine.velocity.y = 5;
+		}
 	}
 
+	var vcrGrp:FlxTypedGroup<FlxSprite>;
 	var connectionlessText = '';
 
 	function setupTxt()
 	{
-		var txt = 'starting feedOS...          
-		connecting to the internet...          ${connectionlessText != '' ? '\n' + connectionlessText : ''}
+		var txt = 'starting feedOS v${Application.current.meta.get('version')}...          
+		connecting to the feed...          ${connectionlessText != '' ? '\n' + connectionlessText : ''}
 		it\'s ${days[Date.now().getDay()]}. ${weatherType()} ${weatherComment()}
+		
 		welcome user
 		
 		';
 
-		var coolText = new FlxTypeText(0, 0, FlxG.width, txt, 32);
+		var coolText = new FlxTypeText(40, 40, FlxG.width - 80, txt, 32);
 		coolText.useDefaultSound = false;
 		coolText.finishSounds = true;
 		coolText.cursorCharacter = '_';
@@ -115,36 +136,53 @@ class Setup extends DefaultState
 		add(coolText);
 	}
 
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		vcrGrp.forEach(line ->
+		{
+			if (line.y >= FlxG.height)
+			{
+				var diff = line.y - FlxG.height;
+				line.y = -1 + diff;
+			}
+		});
+
+		if (FlxG.keys.justPressed.ANY)
+			FlxG.switchState(new states.MenuState());
+	}
+
 	var weatherID:Int = -1;
 	var weatherMap:Map<Int, {type:String, comment:String}> = [
 		0 => {type: "the skies are clear.", comment: ""},
-		1 => {type: "the skies are clear.", comment: ""},
-		2 => {type: "the skies are clear.", comment: ""},
-		3 => {type: "the skies are clear.", comment: ""},
-		45 => {type: "the skies are clear.", comment: ""},
-		48 => {type: "the skies are clear.", comment: ""},
-		51 => {type: "the skies are clear.", comment: ""},
-		53 => {type: "the skies are clear.", comment: ""},
-		55 => {type: "the skies are clear.", comment: ""},
-		56 => {type: "the skies are clear.", comment: ""},
-		57 => {type: "the skies are clear.", comment: ""},
-		61 => {type: "the skies are clear.", comment: ""},
-		63 => {type: "the skies are clear.", comment: ""},
-		65 => {type: "the skies are clear.", comment: ""},
-		66 => {type: "the skies are clear.", comment: ""},
-		67 => {type: "the skies are clear.", comment: ""},
-		71 => {type: "the skies are clear.", comment: ""},
-		73 => {type: "the skies are clear.", comment: ""},
-		75 => {type: "the skies are clear.", comment: ""},
-		77 => {type: "the skies are clear.", comment: ""},
-		80 => {type: "the skies are clear.", comment: ""},
-		81 => {type: "the skies are clear.", comment: ""},
-		82 => {type: "the skies are clear.", comment: ""},
-		85 => {type: "the skies are clear.", comment: ""},
-		86 => {type: "the skies are clear.", comment: ""},
-		95 => {type: "the skies are clear.", comment: ""},
-		96 => {type: "the skies are clear.", comment: ""},
-		99 => {type: "the skies are clear.", comment: ""}
+		1 => {type: "the skies are mostly clear.", comment: ""},
+		2 => {type: "it's partly cloudy.", comment: ""},
+		3 => {type: "the skies are cast with clouds.", comment: "maybe it'll rain."},
+		45 => {type: "it's foggy.", comment: ""},
+		48 => {type: "it's foggy.", comment: ""},
+		51 => {type: "it's foggy.", comment: ""},
+		53 => {type: "it's foggy.", comment: ""},
+		55 => {type: "it's foggy.", comment: ""},
+		56 => {type: "it's foggy.", comment: ""},
+		57 => {type: "it's foggy.", comment: ""},
+		61 => {type: "it's raining lightly.", comment: ""},
+		63 => {type: "it's raining.", comment: ""},
+		65 => {type: "it's raining heavily.", comment: "the sound must be relaxing."},
+		66 => {type: "it's raining", comment: "with some ice."},
+		67 => {type: "it's raining.", comment: "lots of ice."},
+		71 => {type: "it's snowing lightly.", comment: ""},
+		73 => {type: "it's snowing.", comment: ""},
+		75 => {type: "it's snowing heavily.", comment: ""},
+		77 => {type: "it's snowing.", comment: ""},
+		80 => {type: "it's raining hard.", comment: ""},
+		81 => {type: "it's raining hard.", comment: ""},
+		82 => {type: "it's raining hard.", comment: ""},
+		85 => {type: "it's snowing.", comment: ""},
+		86 => {type: "it's snowing.", comment: ""},
+		95 => {type: "it's storming.", comment: ""},
+		96 => {type: "it's storming.", comment: ""},
+		99 => {type: "it's storming.", comment: ""}
 	];
 
 	function weatherType():String

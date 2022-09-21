@@ -1,6 +1,8 @@
 package states;
 
-class DefaultState extends FlxState
+import flixel.addons.transition.FlxTransitionableState;
+
+class DefaultState extends FlxTransitionableState
 {
 	override function update(elapsed:Float)
 	{

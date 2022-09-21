@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.text.FlxTypeText;
+import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets;
@@ -34,13 +35,11 @@ class MenuState extends DefaultState
 	var ready:Bool = false;
 	var feed:FlxTypeText;
 	var wires:FlxSprite;
+	var sittingMarty:FlxSprite;
 
 	override public function create()
 	{
 		super.create();
-		FlxG.game.setFilters([new ShaderFilter(new FlxShader())]);
-		FlxG.game.stage.quality = StageQuality.LOW;
-
 		var bg = new FlxSprite().loadGraphic('assets/images/menuroom.png');
 		bg.scale.set(4, 4);
 		add(bg);
@@ -53,7 +52,37 @@ class MenuState extends DefaultState
 
 		add(wires);
 		wires.scale.set(4, 4);
+		wires.updateHitbox();
 		wires.setPosition(404, 160);
+
+		sittingMarty = new FlxSprite().loadGraphic('assets/images/martyZap.png', true, 18, 24);
+		sittingMarty.animation.add('reg', [0]);
+		sittingMarty.animation.add('spark', [for (i in 0...16) 1].concat([for (i in 2...6) i]).concat([for (i in 0...16) (6 + (i % 2))]), 12, false);
+		sittingMarty.animation.play("reg");
+		sittingMarty.animation.callback = function(name, number, index)
+		{
+			if (name == 'spark')
+				if (number == 20)
+					Sound.play('sound_zap', .2);
+		};
+		sittingMarty.animation.finishCallback = name -> if (name == 'spark')
+		{
+			sittingMarty.animation.play('reg');
+			var emitter:FlxEmitter = new FlxEmitter(sittingMarty.x + (10 * 4), sittingMarty.y + (4 * 4), 30);
+			emitter.makeParticles(2, 2, FlxColor.BLACK, 30);
+			emitter.scale.set(1, 1, 1, 1, 20, 20, 50, 50);
+			emitter.angularVelocity.set(0, 50, 20, 100);
+			emitter.alpha.set(0.6, 0.6, 0.0, 0.0);
+			emitter.launchMode = SQUARE;
+			emitter.velocity.set(-50, -40, 50, -10, -50, -100, 50, -50);
+			emitter.start();
+			insert(members.indexOf(sittingMarty) - 1, emitter);
+		};
+		add(sittingMarty);
+
+		sittingMarty.scale.set(4, 4);
+		sittingMarty.updateHitbox();
+		sittingMarty.setPosition(wires.x + 10 * 4, 33 * 4);
 
 		var menuItems:Array<
 			{
@@ -67,7 +96,8 @@ class MenuState extends DefaultState
 				{label: 'Start Story', onPress: () -> FlxG.switchState(new PlayState())},
 				{
 					label: 'Test Dialogue',
-					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "yooooooo", 'speaker', true))
+					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "yooooooo", 'speaker', FlxG.random.bool(25),
+						FlxG.random.bool(25)))
 				},
 				{label: 'Options'}
 				#if desktop, {label: 'Exit', onPress: () -> Sys.exit(0)} #end
@@ -220,6 +250,9 @@ class MenuState extends DefaultState
 		if (FlxG.random.bool(.25))
 			wires.animation.play('spark');
 
+		if (FlxG.random.bool(.1) && sittingMarty.animation.name != 'spark')
+			sittingMarty.animation.play('spark');
+
 		if (!ready)
 			return;
 
@@ -280,6 +313,8 @@ class MenuState extends DefaultState
 
 	function gotoMenu()
 	{
+		grpItem.forEach(item -> item.color = FlxColor.WHITE);
+		grpOptions.forEach(item -> item.color = FlxColor.WHITE);
 		ready = false;
 		updateTitle('feed');
 		inMenu = true;
@@ -304,6 +339,8 @@ class MenuState extends DefaultState
 
 	function gotoOptions()
 	{
+		grpItem.forEach(item -> item.color = FlxColor.WHITE);
+		grpOptions.forEach(item -> item.color = FlxColor.WHITE);
 		ready = false;
 		updateTitle('options');
 		inMenu = false;
