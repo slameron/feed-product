@@ -24,11 +24,14 @@ class Setup extends DefaultState
 		'Sunday'
 	];
 
+	var timeslots = ['morning', 'afternoon', 'evening', 'night'];
+
 	override public function create()
 	{
 		super.create();
 
-		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, .25, new FlxPoint(1, 1));FlxTransitionableState.defaultTransOut = FlxTransitionableState.defaultTransIn;
+		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, .25, new FlxPoint(1, 1));
+		FlxTransitionableState.defaultTransOut = FlxTransitionableState.defaultTransIn;
 
 		FlxG.save.bind('FEED_PRODUCT');
 		FlxG.log.redirectTraces = true;
@@ -113,7 +116,7 @@ class Setup extends DefaultState
 	{
 		var txt = 'starting feedOS v${Application.current.meta.get('version')}...          
 		connecting to the feed...          ${connectionlessText != '' ? '\n' + connectionlessText : ''}
-		it\'s ${days[Date.now().getDay()]}. ${weatherType()} ${weatherComment()}
+		good ${timeSlot()}. it\'s ${days[Date.now().getDay()]}. ${weatherType()} ${weatherComment()}
 		
 		welcome user
 		
@@ -175,9 +178,9 @@ class Setup extends DefaultState
 		73 => {type: "it's snowing.", comment: ""},
 		75 => {type: "it's snowing heavily.", comment: ""},
 		77 => {type: "it's snowing.", comment: ""},
-		80 => {type: "it's raining hard.", comment: ""},
-		81 => {type: "it's raining hard.", comment: ""},
-		82 => {type: "it's raining hard.", comment: ""},
+		80 => {type: "it's raining.", comment: ""},
+		81 => {type: "it's raining.", comment: ""},
+		82 => {type: "it's raining.", comment: ""},
 		85 => {type: "it's snowing.", comment: ""},
 		86 => {type: "it's snowing.", comment: ""},
 		95 => {type: "it's storming.", comment: ""},
@@ -190,4 +193,24 @@ class Setup extends DefaultState
 
 	function weatherComment():String
 		return weatherID == -1 ? '' : weatherMap[weatherID].comment;
+
+	function timeSlot():String
+	{
+		var time:String = '';
+		switch (Date.now().getHours())
+		{
+			case 23 | 0 | 1 | 2 | 3 | 4:
+				time = timeslots[3];
+
+			case 5 | 6 | 7 | 8 | 9 | 10 | 11:
+				time = timeslots[0];
+
+			case 12 | 13 | 14 | 15 | 16 | 17 | 18:
+				time = timeslots[1];
+
+			case 19 | 20 | 21 | 22:
+				time = timeslots[2];
+		}
+		return time;
+	}
 }

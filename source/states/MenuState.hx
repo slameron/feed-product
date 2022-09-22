@@ -40,6 +40,7 @@ class MenuState extends DefaultState
 	override public function create()
 	{
 		super.create();
+
 		var bg = new FlxSprite().loadGraphic('assets/images/menuroom.png');
 		bg.scale.set(4, 4);
 		add(bg);
@@ -53,7 +54,19 @@ class MenuState extends DefaultState
 		add(wires);
 		wires.scale.set(4, 4);
 		wires.updateHitbox();
-		wires.setPosition(404, 160);
+		wires.setPosition(404, 152);
+
+		var lt = new FlxSprite().loadGraphic('assets/images/titusClear.png', true, 14, 34);
+		lt.animation.add('reg', [0]);
+		lt.animation.play('reg');
+		var w = [5, 4, 3, 4, 5, 6];
+
+		w = w.concat(w);
+		lt.animation.add('waft', [for (i in 0...7) i].concat(w).concat([for (i in 0...7) 6 - i]), 8, false);
+		lt.scale.set(4, 4);
+		lt.updateHitbox();
+		lt.setPosition(86 * 4, 18 * 4);
+		add(lt);
 
 		sittingMarty = new FlxSprite().loadGraphic('assets/images/martyZap.png', true, 18, 24);
 		sittingMarty.animation.add('reg', [0]);
@@ -76,13 +89,15 @@ class MenuState extends DefaultState
 			emitter.launchMode = SQUARE;
 			emitter.velocity.set(-50, -40, 50, -10, -50, -100, 50, -50);
 			emitter.start();
-			insert(members.indexOf(sittingMarty) - 1, emitter);
+			insert(members.indexOf(sittingMarty), emitter);
+
+			new FlxTimer().start(FlxG.random.float(0.5, 1.5), tmr -> lt.animation.play('waft', true));
 		};
 		add(sittingMarty);
 
 		sittingMarty.scale.set(4, 4);
 		sittingMarty.updateHitbox();
-		sittingMarty.setPosition(wires.x + 10 * 4, 33 * 4);
+		sittingMarty.setPosition(wires.x + 10 * 4, 31 * 4);
 
 		var menuItems:Array<
 			{
@@ -96,7 +111,7 @@ class MenuState extends DefaultState
 				{label: 'Start Story', onPress: () -> FlxG.switchState(new PlayState())},
 				{
 					label: 'Test Dialogue',
-					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "yooooooo", 'speaker', FlxG.random.bool(25),
+					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "text box", 'speaker', FlxG.random.bool(25),
 						FlxG.random.bool(25)))
 				},
 				{label: 'Options'}
@@ -242,6 +257,7 @@ class MenuState extends DefaultState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
 		@:privateAccess
 		FlxG.watch.addQuick('text', feed._finalText);
 		FlxG.watch.addQuick('ready', ready);
