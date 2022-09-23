@@ -3,6 +3,7 @@ package states;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.addons.text.FlxTypeText;
 import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -15,7 +16,6 @@ import flixel.util.FlxColor;
 import objects.DialogueBox;
 import objects.MenuItem;
 import openfl.display.StageQuality;
-import openfl.filters.ShaderFilter;
 
 using StringTools;
 
@@ -41,10 +41,13 @@ class MenuState extends DefaultState
 	{
 		super.create();
 
-		var bg = new FlxSprite().loadGraphic('assets/images/menuroom.png');
-		bg.scale.set(4, 4);
-		add(bg);
-		bg.screenCenter();
+		var loader = new FlxOgmo3Loader('assets/data/feed.ogmo', 'assets/data/levels/house.json');
+		@:privateAccess
+		var tiles = loader.loadTilemap(StringTools.replace(FlxOgmo3Loader.getTilesetData(loader.project,
+			FlxOgmo3Loader.getTileLayer(loader.level, 'ground').tileset)
+			.path, "..", "assets"),
+			'ground');
+		add(tiles);
 
 		wires = new FlxSprite().loadGraphic('assets/images/wires.png', true, 13, 11);
 		wires.animation.add('reg', [0]);
@@ -54,7 +57,7 @@ class MenuState extends DefaultState
 		add(wires);
 		wires.scale.set(4, 4);
 		wires.updateHitbox();
-		wires.setPosition(404, 152);
+		wires.setPosition(404, 152 + (9*4));
 
 		var lt = new FlxSprite().loadGraphic('assets/images/titusClear.png', true, 14, 34);
 		lt.animation.add('reg', [0]);
@@ -65,7 +68,7 @@ class MenuState extends DefaultState
 		lt.animation.add('waft', [for (i in 0...7) i].concat(w).concat([for (i in 0...7) 6 - i]), 8, false);
 		lt.scale.set(4, 4);
 		lt.updateHitbox();
-		lt.setPosition(86 * 4, 18 * 4);
+		lt.setPosition(86 * 4, 27 * 4);
 		add(lt);
 
 		sittingMarty = new FlxSprite().loadGraphic('assets/images/martyZap.png', true, 18, 24);
@@ -97,7 +100,7 @@ class MenuState extends DefaultState
 
 		sittingMarty.scale.set(4, 4);
 		sittingMarty.updateHitbox();
-		sittingMarty.setPosition(wires.x + 10 * 4, 31 * 4);
+		sittingMarty.setPosition(wires.x + 10 * 4, 40 * 4);
 
 		var menuItems:Array<
 			{

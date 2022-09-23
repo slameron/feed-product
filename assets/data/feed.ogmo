@@ -1,0 +1,58 @@
+{
+  "name": "feed",
+  "ogmoVersion": "3.4.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#282c34ff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 32, "y": 32},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 0, "y": 0},
+  "levelMaxSize": {"x": 4096, "y": 4096},
+  "levelValues": [],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": [],
+  "layers": [
+    {
+      "definition": "entity",
+      "name": "ents_bg",
+      "gridSize": {"x": 32, "y": 32},
+      "exportID": "94037960",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "tile",
+      "name": "ground",
+      "gridSize": {"x": 32, "y": 32},
+      "exportID": "94025293",
+      "exportMode": 0,
+      "arrayMode": 0,
+      "defaultTileset": "New Tileset"
+    },
+    {
+      "definition": "entity",
+      "name": "ents_mg",
+      "gridSize": {"x": 32, "y": 32},
+      "exportID": "94038451",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "entity",
+      "name": "ents_fg",
+      "gridSize": {"x": 32, "y": 32},
+      "exportID": "94039787",
+      "requiredTags": [],
+      "excludedTags": []
+    }
+  ],
+  "entities": [],
+  "tilesets": [
+    {"label": "tiles", "path": "../images/indoortile.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAP5JREFUeJzt2bEJwlAURmEjqbKDA9iZ0jUUFO0sdBHRpRzBRmxSWLqDlRBr7UTIJ+Q/Xap7OFweeUkxwOymdSvnD+XwfyABtICm1ALjUdXpvOb+eHvu/QYkgBbQJIAW0CSAFtAkgBbQJIAW0PC7wOe7edf0fgMSQAto+Bnw7feAzzPj1+8Jvd+ABNACmgTQApoE0AKaBNACmgTQAppitZjR//NNNZHjswEJoAU0xfn2pGfA9nCU47MBCaAFNAmgBTQJoAU05eV60g6U3m9AAmgBTdG2Lb0L1Ju9HJ8NSAAtoEkALaBJAC2gSQAtoEkALaAp18u5Nci/QUsCaAHNC8SKHCRmYRDXAAAAAElFTkSuQmCC", "tileWidth": 32, "tileHeight": 32, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+  ]
+}
