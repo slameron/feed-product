@@ -26,9 +26,12 @@ class Setup extends DefaultState
 
 	var timeslots = ['morning', 'afternoon', 'evening', 'night'];
 
+	public static var controls:Controls;
+
 	override public function create()
 	{
 		super.create();
+		controls = new Controls();
 
 		FlxTransitionableState.defaultTransIn = new TransitionData(TransitionType.TILES, FlxColor.BLACK, .25, new FlxPoint(1, 1));
 		FlxTransitionableState.defaultTransOut = FlxTransitionableState.defaultTransIn;

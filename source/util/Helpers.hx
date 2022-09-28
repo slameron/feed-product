@@ -41,7 +41,7 @@ class Helpers
 	/**The loader will check this map for the `char` that is passed in. If not, it defaults to Pickle Frickle's.
 		Note that this was for another game I'm just leaving the pickle shit
 	**/
-	static var runFramerates:Map<String, Int> = ["Pickle Frickle" => 10, "Fire Pickle" => 24];
+	static var runFramerates:Map<String, Int> = ["Pickle Frickle" => 6, "Fire Pickle" => 24];
 
 	static function loadCharacterJson(json:String, ?frames:Bool = true):Array<Dynamic>
 	{
@@ -94,7 +94,7 @@ class Helpers
 
 		var parsedFrame:Frame = {
 			animation: animName,
-			index: Std.int((framePoint.x / 32) + ((framePoint.y / 32) * (_spritesheetWidth / 32))),
+			index: Std.int((framePoint.x / _w) + ((framePoint.y / _h) * (_spritesheetWidth / _w))),
 			looped: loop,
 			flipX: flip
 		};
@@ -108,21 +108,32 @@ class Helpers
 		FlipX: False, unless you have `-flipx=bool` in Aseprite tags.
 		@param char The filename of the image you want loaded. Relative to `assets/images/characters/`. Note that in FNF project it probably has to be under preload folder.
 		@param defLoop Whether the animations should loop by default, being overridden by `-looped=bool` in the Aseprite tag. Defaults to true.
+		@param c Sprite to apply to. If null, will create a new one and return it.
 
 	**/
-	public static function retChar(char:String, ?defLoop:Bool = true):FlxSprite
+	static var _w:Int = 1;
+
+	static var _h:Int = 1;
+
+	public static function retChar(char:String, ?defLoop:Bool = true, ?c:FlxSprite):FlxSprite
 	{
 		// the character to return
-		var c = new FlxSprite();
+		if (c == null)
+			c = new FlxSprite();
 		c.setFacingFlip(LEFT, true, false);
 		c.setFacingFlip(RIGHT, false, false);
 		c.facing = RIGHT;
-		c.loadGraphic('assets/images/characters/$char.png', true, 32, 32);
+
 		if (openfl.utils.Assets.exists('assets/images/characters/$char.json', TEXT))
 		{
 			var json:String = Assets.getText('assets/images/characters/$char.json').trim();
 			var frameInfo:Array<Dynamic> = loadCharacterJson(json);
 			var metadata:Dynamic = getMetadata(json);
+
+			var dim = frameInfo[0].sourceSize;
+			_w = dim.w;
+			_h = dim.h;
+			c.loadGraphic('assets/images/characters/$char.png', true, _w, _h);
 
 			var _SSW:Int = metadata.size.w;
 
