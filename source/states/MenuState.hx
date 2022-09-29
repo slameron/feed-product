@@ -5,6 +5,7 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.addons.text.FlxTypeText;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
@@ -57,7 +58,7 @@ class MenuState extends DefaultState
 		add(wires);
 		wires.scale.set(4, 4);
 		wires.updateHitbox();
-		wires.setPosition(404, 152 + (9*4));
+		wires.setPosition(404, 152 + (9 * 4));
 
 		var lt = new FlxSprite().loadGraphic('assets/images/titusClear.png', true, 14, 34);
 		lt.animation.add('reg', [0]);
@@ -111,14 +112,35 @@ class MenuState extends DefaultState
 				?onLeft:() -> Void,
 				?onRight:() -> Void
 			}> = [
-				{label: 'Start Story', onPress: () -> FlxG.switchState(new PlayState())},
 				{
-					label: 'Test Dialogue',
-					onPress: () -> add(new DialogueBox(FlxG.random.int(0, 100), FlxG.random.int(0, 100), "text box", 'speaker', FlxG.random.bool(25),
-						FlxG.random.bool(25)))
+					label: 'Start Story',
+					onPress: () ->
+					{
+						ready = false;
+						var items:Int = 0;
+						FlxTween.tween(feed, {
+							x: 0 - feed.width - 50
+						}, .5, {ease: FlxEase.cubeIn});
+						for (i in 0...grpItem.members.length)
+							FlxTween.tween(grpItem.members[i], {x: 0 - grpItem.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * (1 + i)});
+						for (i in 0...grpOptions.members.length)
+						{
+							FlxTween.tween(grpOptions.members[i], {x: 0 - grpOptions.members[i].width - 1}, .5,
+								{ease: FlxEase.cubeIn, startDelay: .3 * (1 + i)});
+							items++;
+						}
+						FlxTween.tween(barTop, {y: 0 - barTop.height - 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
+						FlxTween.tween(barBottom, {y: FlxG.height + 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
+
+						FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
+						new FlxTimer().start(.5 + (.3 * items), tmr -> FlxG.switchState(new PlayState()));
+					}
 				},
+
 				{label: 'Options'}
-				#if desktop, {label: 'Exit', onPress: () -> Sys.exit(0)} #end
+				#if desktop
+				, {label: 'Exit', onPress: () -> Sys.exit(0)}
+				#end
 			];
 		var options:Array<
 			{

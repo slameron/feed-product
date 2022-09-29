@@ -108,7 +108,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-12",
+    "filename": "shock-12",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -117,7 +117,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-13",
+    "filename": "shock-13",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -126,7 +126,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-14",
+    "filename": "shock-14",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -135,7 +135,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-15",
+    "filename": "shock-15",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -144,7 +144,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-16",
+    "filename": "shock-16",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -153,7 +153,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-17",
+    "filename": "shock-17",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -162,7 +162,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-18",
+    "filename": "shock-18",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -171,7 +171,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-19",
+    "filename": "shock-19",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -180,7 +180,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-20",
+    "filename": "shock-20",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -189,7 +189,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-21",
+    "filename": "shock-21",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -198,7 +198,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-22",
+    "filename": "shock-22",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -207,7 +207,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-23",
+    "filename": "shock-23",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -216,7 +216,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-24",
+    "filename": "shock-24",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -225,7 +225,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-25",
+    "filename": "shock-25",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -234,7 +234,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-26",
+    "filename": "shock-26",
     "frame": { "x": 0, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -243,7 +243,7 @@
     "duration": 100
    },
    {
-    "filename": "shock-looped=false-framerate=12-27",
+    "filename": "shock-27",
     "frame": { "x": 14, "y": 102, "w": 14, "h": 34 },
     "rotated": false,
     "trimmed": false,
@@ -264,7 +264,7 @@
    { "name": "clear", "from": 1, "to": 6, "direction": "forward", "color": "#000000ff" },
    { "name": "stand", "from": 7, "to": 7, "direction": "forward", "color": "#000000ff" },
    { "name": "walk", "from": 8, "to": 11, "direction": "forward", "color": "#000000ff" },
-   { "name": "shock-looped=false-framerate=12", "from": 12, "to": 27, "direction": "forward", "color": "#000000ff" }
+   { "name": "shock", "from": 12, "to": 27, "direction": "forward", "color": "#000000ff" }
   ]
  }
 }

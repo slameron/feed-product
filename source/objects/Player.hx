@@ -3,31 +3,6 @@ package objects;
 import flixel.FlxObject;
 import flixel.util.FlxSpriteUtil;
 
-class Shadow extends FlxSprite
-{
-	public var parent:FlxSprite;
-
-	override public function new(x:Float, y:Float)
-	{
-		super(x, y);
-	}
-	/*override function set_x(newX:Float):Float
-		{
-			// trace('setting shadow x');
-			if (parent != null)
-				parent.x = newX + width / 2 - parent.width / 2;
-			return x = newX;
-		}
-
-		override function set_y(newX:Float):Float
-		{
-			// trace("setting shadow y");
-			if (parent != null)
-				parent.y = newX + 10 - parent.height;
-			return y = newX;
-	}*/
-}
-
 /**quick and dirty player class**/
 class Player extends FlxSprite
 {
@@ -47,10 +22,12 @@ class Player extends FlxSprite
 		return Setup.controls;
 
 	var speed:Float = 250;
-	var shadow:Shadow;
+	var shadow:FlxSprite;
 
 	/**There's weird collision behaviour when I put the spawn where I need it to be, but not when I start way below. maybe making it spawn below and then move it to where i want on the first update would do me good**/
 	var dirtyWorkaround:Bool = false;
+
+	public var hoveringSomething:Bool = false;
 
 	override public function new(x:Float = 0, y:Float = 0, scale:Int = 1)
 	{
@@ -62,9 +39,8 @@ class Player extends FlxSprite
 		updateHitbox();
 		setPosition(x * scale, y * scale + 500);
 
-		shadow = new Shadow(this.x, this.y);
+		shadow = new FlxSprite(this.x, this.y);
 		shadow.makeGraphic(Math.ceil(width), 20, FlxColor.TRANSPARENT);
-		shadow.parent = this;
 		FlxSpriteUtil.drawEllipse(shadow, 0, 0, shadow.width, shadow.height, FlxColor.BLACK);
 		shadow.alpha = 0.4;
 		shadow.setPosition(this.x, this.y + this.height - 10 + 100);
@@ -110,6 +86,12 @@ class Player extends FlxSprite
 
 	function animationLogic()
 	{
+		if (animation.curAnim != null)
+			if (animation.curAnim.name == 'shock')
+				if (animation.curAnim.finished)
+					animation.play('walk');
+				else
+					return;
 		if (velocity.x != 0 || velocity.y != 0)
 			animation.play('walk');
 		else
@@ -120,6 +102,12 @@ class Player extends FlxSprite
 
 	function movementLogic()
 	{
+		if (animation.curAnim != null)
+			if (animation.curAnim.name == 'shock')
+			{
+				velocity.set(0, 0);
+				return;
+			}
 		// up/down movement
 		if (controls.up)
 			velocity.y = -speed;

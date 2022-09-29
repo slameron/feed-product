@@ -60,12 +60,11 @@ class Setup extends DefaultState
 		{
 			var json = haxe.Json.parse(data);
 
-			trace(json.loc);
 			if (json.loc == null)
 			{
 				connectionlessText = 'feednet connection failed. please check your network connection and try again later.';
 				setupTxt();
-				trace('json.loc is null or somethi...');
+
 				return;
 			}
 			var loc:String = json.loc;
@@ -76,10 +75,9 @@ class Setup extends DefaultState
 			http2.onData = function(data:Dynamic)
 			{
 				var json = haxe.Json.parse(data);
-				trace(json);
 
 				weatherID = json.daily.weathercode[0];
-				trace('weatherID $weatherID');
+
 				setupTxt();
 			}
 			http2.onError = function(error)

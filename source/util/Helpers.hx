@@ -10,7 +10,8 @@ typedef Frame =
 	animation:String,
 	index:Int,
 	looped:Bool,
-	flipX:Bool
+	flipX:Bool,
+	framerate:Null<Int>
 }
 
 typedef AnimationData =
@@ -18,7 +19,8 @@ typedef AnimationData =
 	animation:String,
 	indices:Array<Int>,
 	looped:Bool,
-	flipX:Bool
+	flipX:Bool,
+	framerate:Null<Int>
 }
 
 class Helpers
@@ -64,6 +66,7 @@ class Helpers
 
 		var loop:Bool = defLoop;
 		var flip:Bool = false;
+		var framerate:Int = 0;
 
 		var split:Array<String> = animName.split('-');
 		for (string in split)
@@ -71,7 +74,7 @@ class Helpers
 
 		animName = split[0];
 
-		if (split[1] != null && split[1] != '' && split[1] != " ")
+		while (split[1] != null && split[1] != '' && split[1] != " ")
 		{
 			var param:Array<String> = split[1].split('=');
 			// trace(param);
@@ -88,15 +91,20 @@ class Helpers
 						loop = Helpers.boolFromString(param[1]);
 					case 'flipx':
 						flip = Helpers.boolFromString(param[1]);
+					case 'framerate':
+						framerate = Std.parseInt(param[1]);
 				}
 			}
+
+			split.remove(split[1]);
 		}
 
 		var parsedFrame:Frame = {
 			animation: animName,
 			index: Std.int((framePoint.x / _w) + ((framePoint.y / _h) * (_spritesheetWidth / _w))),
 			looped: loop,
-			flipX: flip
+			flipX: flip,
+			framerate: framerate
 		};
 
 		return (parsedFrame);
@@ -158,7 +166,8 @@ class Helpers
 							animation: parsedFrame.animation,
 							indices: [parsedFrame.index],
 							looped: parsedFrame.looped,
-							flipX: parsedFrame.flipX
+							flipX: parsedFrame.flipX,
+							framerate: parsedFrame.framerate
 						};
 						animationsList.set(parsedFrame.animation, animationData);
 					}
@@ -169,15 +178,19 @@ class Helpers
 			frameInfo = null;
 			metadata = null;
 
-			var framerate:Int = 0;
-
-			if (runFramerates.exists(char))
-				framerate = runFramerates[char];
-			else
-				framerate = runFramerates['Pickle Frickle'];
-
 			for (key in animationsList.keys())
+			{
+				var framerate:Null<Int> = 0;
+
+				if (animationsList[key].framerate != null && animationsList[key].framerate != 0)
+					framerate = animationsList[key].framerate;
+				else if (runFramerates.exists(char))
+					framerate = runFramerates[char];
+				else
+					framerate = runFramerates['Pickle Frickle'];
+
 				c.animation.add(key, animationsList[key].indices, framerate, animationsList[key].looped, animationsList[key].flipX);
+			}
 
 			// trace(animationsList);
 		}
