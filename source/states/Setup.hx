@@ -10,6 +10,7 @@ import flixel.system.FlxAssets;
 import flixel.system.FlxSound;
 import lime.app.Application;
 import openfl.filters.ShaderFilter;
+import vfx.CrtShader;
 
 class Setup extends DefaultState
 {
@@ -108,6 +109,8 @@ class Setup extends DefaultState
 			vcrLine.y = i;
 			vcrLine.velocity.y = 5;
 		}
+
+		FlxG.game.setFilters([new ShaderFilter(new CrtShader())]);
 	}
 
 	var vcrGrp:FlxTypedGroup<FlxSprite>;
@@ -136,7 +139,10 @@ class Setup extends DefaultState
 				new FlxSound().loadEmbedded(Assets.sound('menuChange'))
 		];
 		coolText.start(true);
-		coolText.completeCallback = () -> new FlxTimer().start(3, tmr -> FlxG.switchState(new states.MenuState()));
+		coolText.completeCallback = () -> new FlxTimer().start(3, tmr ->
+		{
+			FlxG.switchState(new states.MenuState());
+		});
 		add(coolText);
 	}
 
@@ -154,7 +160,10 @@ class Setup extends DefaultState
 		});
 
 		if (FlxG.keys.justPressed.ANY)
+		{
+			FlxG.game.setFilters([]);
 			FlxG.switchState(new states.MenuState());
+		}
 	}
 
 	var weatherID:Int = -1;

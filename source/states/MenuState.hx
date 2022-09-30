@@ -17,8 +17,20 @@ import flixel.util.FlxColor;
 import objects.DialogueBox;
 import objects.MenuItem;
 import openfl.display.StageQuality;
+import vfx.CrtShader;
 
 using StringTools;
+
+typedef ButtonStuff =
+{
+	label:String,
+	?type:String,
+	?track:Dynamic,
+	?onPress:() -> Void,
+	?onLeft:() -> Void,
+	?onRight:() -> Void,
+	?onChange:Dynamic->Void
+}
 
 class MenuState extends DefaultState
 {
@@ -26,6 +38,7 @@ class MenuState extends DefaultState
 	var barBottom:FlxSprite;
 	var grpItem:FlxTypedGroup<MenuItem>;
 	var grpOptions:FlxTypedGroup<MenuItem>;
+	var grpCredits:FlxTypedGroup<MenuItem>;
 	var curSel:Int = -1;
 
 	/**The active menu's group of items. Used to dynamically select stuff**/
@@ -41,6 +54,7 @@ class MenuState extends DefaultState
 	override public function create()
 	{
 		super.create();
+		FlxG.game.setFilters([]);
 
 		var loader = new FlxOgmo3Loader('assets/data/feed.ogmo', 'assets/data/levels/house.json');
 		@:privateAccess
@@ -103,97 +117,93 @@ class MenuState extends DefaultState
 		sittingMarty.updateHitbox();
 		sittingMarty.setPosition(wires.x + 10 * 4, 40 * 4);
 
-		var menuItems:Array<
+		var menuItems:Array<ButtonStuff> = [
 			{
-				label:String,
-				?type:String,
-				?track:Dynamic,
-				?onPress:() -> Void,
-				?onLeft:() -> Void,
-				?onRight:() -> Void
-			}> = [
+				label: 'Start Story',
+				onPress: () ->
 				{
-					label: 'Start Story',
-					onPress: () ->
+					ready = false;
+					var items:Int = 0;
+					FlxTween.tween(feed, {
+						x: 0 - feed.width - 50
+					}, .5, {ease: FlxEase.cubeIn});
+					for (i in 0...grpItem.members.length)
+						FlxTween.tween(grpItem.members[i], {x: 0 - grpItem.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * (1 + i)});
+					for (i in 0...grpOptions.members.length)
 					{
-						ready = false;
-						var items:Int = 0;
-						FlxTween.tween(feed, {
-							x: 0 - feed.width - 50
-						}, .5, {ease: FlxEase.cubeIn});
-						for (i in 0...grpItem.members.length)
-							FlxTween.tween(grpItem.members[i], {x: 0 - grpItem.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * (1 + i)});
-						for (i in 0...grpOptions.members.length)
-						{
-							FlxTween.tween(grpOptions.members[i], {x: 0 - grpOptions.members[i].width - 1}, .5,
-								{ease: FlxEase.cubeIn, startDelay: .3 * (1 + i)});
-							items++;
-						}
-						FlxTween.tween(barTop, {y: 0 - barTop.height - 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
-						FlxTween.tween(barBottom, {y: FlxG.height + 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
-
-						FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
-						new FlxTimer().start(.5 + (.3 * items), tmr -> FlxG.switchState(new PlayState()));
+						FlxTween.tween(grpOptions.members[i], {x: 0 - grpOptions.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * (1 + i)});
+						items++;
 					}
-				},
+					FlxTween.tween(barTop, {y: 0 - barTop.height - 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
+					FlxTween.tween(barBottom, {y: FlxG.height + 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
 
-				{label: 'Options'}
-				#if desktop
-				, {label: 'Exit', onPress: () -> Sys.exit(0)}
-				#end
-			];
-		var options:Array<
-			{
-				label:String,
-				?type:String,
-				?track:Dynamic,
-				?onPress:() -> Void,
-				?onLeft:() -> Void,
-				?onRight:() -> Void,
-				?onChange:Dynamic->Void
-			}> = [
-				{
-					label: "Fullscreen",
-					track: "FlxG.fullscreen",
-					onPress: () ->
-					{
-						FlxG.fullscreen = !FlxG.fullscreen;
-						FlxG.save.data.fullscreen = FlxG.fullscreen;
-					}
-				},
-				{
-					label: "Master Volume",
-					onLeft: () ->
-					{
-						FlxG.save.data.volume = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.volume - .1, 0, 1), 1);
-						FlxG.sound.volume = FlxG.save.data.volume;
-						// FlxG.sound.changeVolume(-.1);
-					},
-					onRight: () ->
-					{
-						FlxG.save.data.volume = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.volume + .1, 0, 1), 1);
-						FlxG.sound.volume = FlxG.save.data.volume;
-						// FlxG.sound.changeVolume(.1);
-					},
-					track: "FlxG.sound.volume"
-				},
-				{
-					label: "Sound Volume",
-					onLeft: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol - .1, 0, 1), 1),
-					onRight: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol + .1, 0, 1), 1),
-					track: "FlxG.save.data.sndVol"
-				},
-				{
-					label: "Music Volume",
-					onLeft: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol - .1, 0, 1), 1),
-					onRight: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol + .1, 0, 1), 1),
-					track: "FlxG.save.data.musVol"
-				},
-
-				{
-					label: 'Go back'
+					FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
+					new FlxTimer().start(.5 + (.3 * items), tmr -> FlxG.switchState(new PlayState()));
 				}
-			];
+			},
+
+			{label: 'Options'},
+			{label: "Credits"}
+			#if desktop
+			, {label: 'Exit', onPress: () -> Sys.exit(0)}
+			#end
+		];
+		var options:Array<ButtonStuff> = [
+			{
+				label: "Fullscreen",
+				track: "FlxG.fullscreen",
+				onPress: () ->
+				{
+					FlxG.fullscreen = !FlxG.fullscreen;
+					FlxG.save.data.fullscreen = FlxG.fullscreen;
+				}
+			},
+			{
+				label: "Master Volume",
+				onLeft: () ->
+				{
+					FlxG.save.data.volume = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.volume - .1, 0, 1), 1);
+					FlxG.sound.volume = FlxG.save.data.volume;
+					// FlxG.sound.changeVolume(-.1);
+				},
+				onRight: () ->
+				{
+					FlxG.save.data.volume = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.volume + .1, 0, 1), 1);
+					FlxG.sound.volume = FlxG.save.data.volume;
+					// FlxG.sound.changeVolume(.1);
+				},
+				track: "FlxG.sound.volume"
+			},
+			{
+				label: "Sound Volume",
+				onLeft: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol - .1, 0, 1), 1),
+				onRight: () -> FlxG.save.data.sndVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.sndVol + .1, 0, 1), 1),
+				track: "FlxG.save.data.sndVol"
+			},
+			{
+				label: "Music Volume",
+				onLeft: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol - .1, 0, 1), 1),
+				onRight: () -> FlxG.save.data.musVol = FlxMath.roundDecimal(FlxMath.bound(FlxG.save.data.musVol + .1, 0, 1), 1),
+				track: "FlxG.save.data.musVol"
+			},
+
+			{
+				label: 'Go back'
+			}
+		];
+		var credits:Array<ButtonStuff> = [
+			{label: "Feed by M.T. Anderson"},
+			{label: "Source code on Github", onPress: () -> FlxG.openURL('https://github.com/slameron/feed-product')},
+			{label: "Music by 2 Mello", onPress: () -> FlxG.openURL('https://www.youtube.com/watch?v=OBt8ioYEXBw')},
+			{
+				label: "Startup screen CRT shader by GeoKureli",
+				onPress: () -> FlxG.openURL('https://github.com/Geokureli/Advent2020/blob/master/source/vfx/CrtShader.hx')
+			},
+			{label: "Sound effects from Newgrounds/Castle Crashers", onPress: () -> FlxG.openURL('https://newgrounds.com')},
+			{
+				label: 'Go back'
+			}
+		];
 
 		bgColor = FlxColor.GRAY;
 
@@ -214,6 +224,8 @@ class MenuState extends DefaultState
 		add(grpItem);
 		grpOptions = new FlxTypedGroup();
 		add(grpOptions);
+		grpCredits = new FlxTypedGroup();
+		add(grpCredits);
 		selectGrp = grpItem;
 
 		for (i in 0...menuItems.length)
@@ -235,6 +247,8 @@ class MenuState extends DefaultState
 				txt.track = data.track;
 			if (txt.text == 'Options')
 				txt.onInteract = gotoOptions;
+			if (txt.text == 'Credits')
+				txt.onInteract = gotoCredits;
 
 			var curX = txt.x;
 			txt.x = 0 - txt.width - 1;
@@ -265,7 +279,26 @@ class MenuState extends DefaultState
 			if (data.track != null)
 				txt.track = data.track;
 			if (txt.text == 'Go back')
-				txt.onInteract = gotoMenu;
+				txt.onInteract = gotoMenu.bind(false);
+
+			txt.update(0);
+
+			var curX = txt.x;
+			txt.x = 0 - txt.width - 1;
+		}
+		for (i in 0...credits.length)
+		{
+			var data = credits[i];
+			var txt = new MenuItem(20, feed.y + feed.height + (22 * i), 0, data.label, 32);
+			grpCredits.add(txt);
+			txt.setBorderStyle(OUTLINE, FlxColor.BLACK, 2, 1);
+			txt.ID = i;
+
+			if (data.onPress != null)
+				txt.onInteract = data.onPress;
+
+			if (txt.text == 'Go back')
+				txt.onInteract = gotoMenu.bind(true);
 
 			txt.update(0);
 
@@ -352,17 +385,20 @@ class MenuState extends DefaultState
 		Sound.play('menuChange');
 	}
 
-	function gotoMenu()
+	function gotoMenu(cred:Bool = false)
 	{
 		grpItem.forEach(item -> item.color = FlxColor.WHITE);
 		grpOptions.forEach(item -> item.color = FlxColor.WHITE);
+		grpCredits.forEach(item -> item.color = FlxColor.WHITE);
+
 		ready = false;
 		updateTitle('feed');
 		inMenu = true;
 		curSel = -1;
+		var daGrp = cred ? grpCredits : grpOptions;
+		for (i in 0...daGrp.members.length)
+			FlxTween.tween(daGrp.members[i], {x: 0 - daGrp.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * i});
 
-		for (i in 0...grpOptions.members.length)
-			FlxTween.tween(grpOptions.members[i], {x: 0 - grpOptions.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * i});
 		for (i in 0...grpItem.members.length)
 		{
 			grpItem.members[i].x = 0 - grpItem.members[i].width - 1;
@@ -399,6 +435,33 @@ class MenuState extends DefaultState
 				{
 					ready = true;
 					selectGrp = grpOptions;
+				}
+			});
+		}
+	}
+
+	function gotoCredits()
+	{
+		grpItem.forEach(item -> item.color = FlxColor.WHITE);
+		grpOptions.forEach(item -> item.color = FlxColor.WHITE);
+		grpCredits.forEach(item -> item.color = FlxColor.WHITE);
+		ready = false;
+		updateTitle('credits');
+		inMenu = false;
+		curSel = -1;
+
+		for (i in 0...grpItem.members.length)
+			FlxTween.tween(grpItem.members[i], {x: 0 - grpItem.members[i].width - 1}, .5, {ease: FlxEase.cubeIn, startDelay: .3 * i});
+		for (i in 0...grpCredits.members.length)
+		{
+			grpCredits.members[i].x = 0 - grpCredits.members[i].width - 1;
+			FlxTween.tween(grpCredits.members[i], {x: 20}, .5, {
+				ease: FlxEase.cubeOut,
+				startDelay: (.3 * i) + .8,
+				onComplete: twn -> if (i == grpCredits.members.length - 1)
+				{
+					ready = true;
+					selectGrp = grpCredits;
 				}
 			});
 		}
