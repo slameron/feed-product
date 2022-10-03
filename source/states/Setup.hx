@@ -51,6 +51,8 @@ class Setup extends DefaultState
 
 		if (FlxG.save.data.fullscreen != null)
 			FlxG.fullscreen = FlxG.save.data.fullscreen;
+		else
+			FlxG.fullscreen = FlxG.save.data.fullscreen = true;
 		FlxG.save.flush();
 
 		Sound.playMusic('24hr', .1);

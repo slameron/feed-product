@@ -7,6 +7,7 @@ import flixel.util.FlxSpriteUtil;
 class Player extends FlxSprite
 {
 	public var controls(get, never):Controls;
+	public var inCutscene:Bool = false;
 
 	var _wc:Array<FlxObject> = [];
 	var _pc:Array<FlxObject> = [];
@@ -32,6 +33,7 @@ class Player extends FlxSprite
 	override public function new(x:Float = 0, y:Float = 0, scale:Int = 1)
 	{
 		super(x, y + 500);
+		facing = LEFT;
 
 		Helpers.retChar('titusPlayer', true, this);
 
@@ -49,6 +51,7 @@ class Player extends FlxSprite
 	override public function update(elapsed:Float)
 	{
 		controls.update(elapsed);
+		FlxG.watch.addQuick('inCutscene', inCutscene);
 
 		if (!dirtyWorkaround)
 		{
@@ -56,13 +59,16 @@ class Player extends FlxSprite
 			y -= 500;
 		}
 
-		movementLogic();
-		animationLogic();
-
 		handleCollisions();
 		super.update(elapsed);
 
-		FlxG.watch.addQuick('stuff', 'y: ${this.y}, h: ${this.height}, sy: ${shadow.y + shadow.height / 2}');
+		if (inCutscene)
+		{
+			velocity.set();
+			return;
+		}
+		movementLogic();
+		animationLogic();
 	}
 
 	override public function draw()

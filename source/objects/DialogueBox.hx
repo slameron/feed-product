@@ -13,12 +13,84 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import openfl.geom.Rectangle;
 
+using StringTools;
+
+/**Usage: `add(new DialogueCutscene('dialogue', player));`. Store in a variable to access currently active dialogue box, lines, etc.**/
+class DialogueCutscene extends FlxTypedSpriteGroup<FlxSprite>
+{
+	public var lines:Array<String>;
+	public var dialogueActive:Bool = false;
+
+	public var activeBox:DialogueBox;
+
+	var player:Player;
+
+	/**@param path Path to the text file you want, relative to `assets/data/dialogue/`. Automatically appends .txt, don't include it in your path.**/
+	override public function new(path:String, plaa:Player, other:FlxSprite, cutscene:Bool = false)
+	{
+		super(0, 0);
+		var textfile = 'assets/data/dialogue/$path.txt';
+		var fullText = lime.utils.Assets.getText(textfile);
+		lines = fullText.split('\n');
+		this.player = plaa;
+		plaa.inCutscene = true;
+
+		for (i in 0...lines.length)
+		{
+			var line = lines[i].trim().split('&');
+			for (a in line)
+				a.trim();
+
+			switch (i)
+			{
+				case 0:
+					activeBox = new DialogueBox(line[0] == 'Titus' ? plaa : other, line[1], 0, 0, 32, '', cutscene);
+				default:
+					activeBox = activeBox.chain(new DialogueBox(line[0] == 'Titus' ? plaa : other, line[1], 0, 0, 32, '', cutscene));
+			}
+
+			add(activeBox = activeBox.start());
+		}
+	}
+
+	override public function draw()
+	{
+		super.draw();
+		activeBox.draw();
+	}
+
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+		if (activeBox != null)
+		{
+			activeBox.update(elapsed);
+			if (activeBox.nextBox != null)
+			{
+				if (activeBox.nextBox.started)
+					activeBox = activeBox.nextBox;
+			}
+			else if (activeBox.finished)
+			{
+				if (player != null)
+					player.inCutscene = false;
+				player = null;
+			}
+		}
+	}
+}
+
 class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 {
 	var txt:FlxTypeText;
 	var box:BoxGraphic;
-	var nextBox:DialogueBox = null;
+
+	public var nextBox:DialogueBox = null;
+
 	var parentBox:DialogueBox = null;
+
+	public var started:Bool = false;
+	public var finished:Bool = false;
 
 	/**@param p Optional sprite to center the box on.
 		@param text What you want the box to type out.
@@ -85,6 +157,7 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 
 	public function start():DialogueBox
 	{
+		started = true;
 		if (parentBox != null)
 		{
 			return parentBox.start();
@@ -109,6 +182,7 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 								nextBox.parentBox = null;
 								nextBox.start();
 							}
+							finished = true;
 						}
 					});
 					FlxTween.tween(txt.scale, {x: 0, y: 0}, .25, {

@@ -51,7 +51,48 @@
       "excludedTags": []
     }
   ],
-  "entities": [],
+  "entities": [
+    {
+      "exportID": "76265052",
+      "name": "door",
+      "limit": -1,
+      "size": {"x": 64, "y": 128},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 32, "y": 64},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "OnInteract", "definition": "String", "display": 2, "defaults": "", "maxLength": 0, "trimWhitespace": true}
+      ],
+      "texture": "../images/sickDoorBro.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAACACAYAAAC7gW9qAAAAAXNSR0IArs4c6QAAAgRJREFUeJztnD1KA0EYQCeaIKkDVlv411gbvYKn8BiCYCEWguAxPIVX8Ke2UWxSBawtjGghK2Tjmqxm9sWd96r87c7z8bFEB7e1sdZ/DwmzRAvQGIAWoGkXX3h8uiE8amNzfXfsefITYABagGbiGlDG2cn5XBc+Pj2Kuk7Z+Ys4AVUP2D84/NOCV5cXUdeZ9fw5TkDVA/pby79a6PbhLeo6Vc+fk/wEGIAWoDEALUBjAFqAxgC0AI0BaAEaA9ACNJV/G5z3X4bodZKfgFZxb9B9gcQwAC1AYwBagGZhdobq2nkq4gRUPSD2zlBdO085TkDVA2LvDNW185ST/AQYgBagMQAtQGMAWoDGALQAjQFoARoD0AI0BqAFaAxAC9AYgBagMQAtQGMAWoCm8r7Af2F0vfP5YPvnH9EJoAViM3h+KbyyMvbMCaAFYjFYfZ3pc8lPgAFoAZrGBsiGnZANO1M/19gAs9L4AFmvG7Jet/T9xgeYRmO/B3xxPwohhJCF768HTgAtEIv23l3JO/6/wBgGoAVoDEAL0BiAFqAxAC1AYwBagMYAtACNAWgBGgPQAjQGoAVoDEAL0BiAFqAxAC1AYwBagMYAtACNAWgBGgPQAjQGoAVoDEAL0BiAFqAxAC1As3D3Fq/rnuI5yU+A9xaHPBYGA9ACNBPXgNRIfgIMQAvQfABSGka9JwHw0AAAAABJRU5ErkJggg=="
+    }
+  ],
   "tilesets": [
     {"label": "tiles", "path": "../images/indoortile.png", "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAP5JREFUeJzt2bEJwlAURmEjqbKDA9iZ0jUUFO0sdBHRpRzBRmxSWLqDlRBr7UTIJ+Q/Xap7OFweeUkxwOymdSvnD+XwfyABtICm1ALjUdXpvOb+eHvu/QYkgBbQJIAW0CSAFtAkgBbQJIAW0PC7wOe7edf0fgMSQAto+Bnw7feAzzPj1+8Jvd+ABNACmgTQApoE0AKaBNACmgTQAppitZjR//NNNZHjswEJoAU0xfn2pGfA9nCU47MBCaAFNAmgBTQJoAU05eV60g6U3m9AAmgBTdG2Lb0L1Ju9HJ8NSAAtoEkALaBJAC2gSQAtoEkALaAp18u5Nci/QUsCaAHNC8SKHCRmYRDXAAAAAElFTkSuQmCC", "tileWidth": 32, "tileHeight": 32, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
   ]

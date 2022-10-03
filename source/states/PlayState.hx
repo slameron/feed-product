@@ -4,19 +4,19 @@ import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.effects.particles.FlxEmitter;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import objects.DialogueBox.DialogueCutscene;
 
 class PlayState extends DefaultState
 {
 	var player:Player;
 	var wires:Interactable;
 	var sittingMarty:Interactable;
-	var interactables:FlxTypedGroup<Interactable>;
 
 	override public function create()
 	{
 		super.create();
 
-		var loader = new FlxOgmo3Loader('assets/data/feed.ogmo', 'assets/data/levels/house.json');
+		loader = new FlxOgmo3Loader('assets/data/feed.ogmo', 'assets/data/levels/house.json');
 		@:privateAccess
 		var tiles = loader.loadTilemap(StringTools.replace(FlxOgmo3Loader.getTilesetData(loader.project,
 			FlxOgmo3Loader.getTileLayer(loader.level, 'ground').tileset)
@@ -28,6 +28,7 @@ class PlayState extends DefaultState
 
 		interactables = new FlxTypedGroup();
 		add(interactables);
+		loadEnts();
 		wires = new Interactable(0, 0, 'assets/images/wires.png', guy ->
 		{
 			if (guy.animation.curAnim.name == 'shock')
@@ -61,7 +62,7 @@ class PlayState extends DefaultState
 
 		sittingMarty = new Interactable(0, 0, 'assets/images/martyZap.png', guy ->
 		{
-			add(new DialogueBox(guy, "hi").chain(new DialogueBox(sittingMarty, 'hello')).chain(new DialogueBox(guy, 'goodbye')).start());
+			add(new DialogueCutscene('letsGetOut', cast(guy, Player), sittingMarty));
 		}, true, 18, 24);
 		sittingMarty.animation.add('reg', [0]);
 		sittingMarty.animation.add('spark', [for (i in 0...16) 1].concat([for (i in 2...6) i]).concat([for (i in 0...16) (6 + (i % 2))]), 12, false);
@@ -101,6 +102,8 @@ class PlayState extends DefaultState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		if (FlxG.keys.justPressed.ESCAPE)
+			FlxG.switchState(new MenuState());
 
 		if (FlxG.random.bool(.5))
 			wires.animation.play('spark', true);
@@ -112,7 +115,7 @@ class PlayState extends DefaultState
 		player.hoveringSomething = false;
 		FlxG.overlap(player, interactables, (obj1:Player, obj2:Interactable) ->
 		{
-			if (obj1.hoveringSomething)
+			if (obj1.hoveringSomething || obj1.inCutscene)
 				return;
 
 			obj1.hoveringSomething = true;

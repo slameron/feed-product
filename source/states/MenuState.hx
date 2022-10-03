@@ -199,6 +199,7 @@ class MenuState extends DefaultState
 				onPress: () -> FlxG.openURL('https://github.com/Geokureli/Advent2020/blob/master/source/vfx/CrtShader.hx')
 			},
 			{label: "Sound effects from Newgrounds/Castle Crashers", onPress: () -> FlxG.openURL('https://newgrounds.com')},
+			{label: "Moon/Earth sprites by gold356 on Newgrounds", onPress: () -> FlxG.openURL('https://gold356.newgrounds.com/')},
 			{
 				label: 'Go back'
 			}
