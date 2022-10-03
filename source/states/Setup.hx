@@ -142,6 +142,7 @@ class Setup extends DefaultState
 		coolText.completeCallback = () -> new FlxTimer().start(3, tmr ->
 		{
 			FlxG.switchState(new states.MenuState());
+			FlxG.game.setFilters([]);
 		});
 		add(coolText);
 	}
@@ -161,8 +162,8 @@ class Setup extends DefaultState
 
 		if (FlxG.keys.justPressed.ANY)
 		{
-			FlxG.game.setFilters([]);
 			FlxG.switchState(new states.MenuState());
+			FlxG.game.setFilters([]);
 		}
 	}
 

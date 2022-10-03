@@ -54,7 +54,6 @@ class MenuState extends DefaultState
 	override public function create()
 	{
 		super.create();
-		FlxG.game.setFilters([]);
 
 		var loader = new FlxOgmo3Loader('assets/data/feed.ogmo', 'assets/data/levels/house.json');
 		@:privateAccess
