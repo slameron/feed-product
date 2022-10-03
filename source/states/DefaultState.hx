@@ -3,6 +3,7 @@ package states;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.system.debug.console.ConsoleUtil;
 import hscript.Interp;
 import hscript.Parser;
 
@@ -41,18 +42,17 @@ class DefaultState extends FlxTransitionableState
 			switch (e.name)
 			{
 				default:
-					#if hscript
-					var parser = new Parser();
-					var interp = new Interp();
-
-					// not really getting why this doesnt work but im determined to get it. this is huge!
-					// also scale down the door to save pixels, scale up with code using the entities tile size vs the sprite size. math! using project.entities
-					interp.variables.set('FlxG', FlxG);
-					var goo:FlxSprite->Void = interp.execute(parser.parseString('spr -> {${e.values.OnInteract}}'));
-					trace(goo);
-					interactables.add(new Interactable(e.x, e.y, getEntityGraphic(e.name), goo));
-					#end
+					interactables.add(new Interactable(e.x, e.y, getEntityGraphic(e.name), spr ->
+					{
+						if (e.values.SwitchState)
+							FlxG.switchState(new State);
+					}));
 			}
 		}, 'ents_fg');
 	}
+}
+
+enum abstract State(String)
+{
+	var DefaultState = 'DefaultState';
 }
