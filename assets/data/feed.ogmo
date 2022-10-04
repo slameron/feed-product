@@ -94,7 +94,8 @@
           "display": 2,
           "choices": ["DefaultState", "SpaceStation", "PlayState"],
           "defaults": 0
-        }
+        },
+        {"name": "OnInteract", "definition": "String", "display": 2, "defaults": "", "maxLength": 0, "trimWhitespace": true}
       ],
       "texture": "../images/sickDoorBro.png",
       "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAACACAYAAAC7gW9qAAAAAXNSR0IArs4c6QAAAgRJREFUeJztnD1KA0EYQCeaIKkDVlv411gbvYKn8BiCYCEWguAxPIVX8Ke2UWxSBawtjGghK2Tjmqxm9sWd96r87c7z8bFEB7e1sdZ/DwmzRAvQGIAWoGkXX3h8uiE8amNzfXfsefITYABagGbiGlDG2cn5XBc+Pj2Kuk7Z+Ys4AVUP2D84/NOCV5cXUdeZ9fw5TkDVA/pby79a6PbhLeo6Vc+fk/wEGIAWoDEALUBjAFqAxgC0AI0BaAEaA9ACNJV/G5z3X4bodZKfgFZxb9B9gcQwAC1AYwBagGZhdobq2nkq4gRUPSD2zlBdO085TkDVA2LvDNW185ST/AQYgBagMQAtQGMAWoDGALQAjQFoARoD0AI0BqAFaAxAC9AYgBagMQAtQGMAWoCm8r7Af2F0vfP5YPvnH9EJoAViM3h+KbyyMvbMCaAFYjFYfZ3pc8lPgAFoAZrGBsiGnZANO1M/19gAs9L4AFmvG7Jet/T9xgeYRmO/B3xxPwohhJCF768HTgAtEIv23l3JO/6/wBgGoAVoDEAL0BiAFqAxAC1AYwBagMYAtACNAWgBGgPQAjQGoAVoDEAL0BiAFqAxAC1AYwBagMYAtACNAWgBGgPQAjQGoAVoDEAL0BiAFqAxAC1As3D3Fq/rnuI5yU+A9xaHPBYGA9ACNBPXgNRIfgIMQAvQfABSGka9JwHw0AAAAABJRU5ErkJggg=="

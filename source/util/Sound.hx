@@ -14,7 +14,7 @@ class Sound
 	public static var panRadius:Float = 150;
 
 	static var sounds:Array<CustomMus> = [];
-	static var musics:Array<CustomMus> = [];
+	static var musics:Map<String, CustomMus> = [];
 
 	public static var menuMusic:FlxSound;
 	public static var gameMus:FlxSound;
@@ -58,7 +58,7 @@ class Sound
 		newSound.update(0);
 		newSound.persist = persist;
 
-		musics.push(newSound);
+		musics.set(key, newSound);
 
 		return newSound;
 	}
@@ -68,11 +68,11 @@ class Sound
 		for (sound in sounds)
 			sound.update(elapsed);
 
-		for (sound in musics)
-			if (sound != null)
+		for (sound in musics.keys())
+			if (musics[sound] != null)
 			{
-				sound.update(elapsed);
-				sound.volume = sound.normal * FlxG.save.data.musVol * FlxG.sound.volume;
+				musics[sound].update(elapsed);
+				musics[sound].volume = musics[sound].normal * FlxG.save.data.musVol * FlxG.sound.volume;
 			}
 			else
 				musics.remove(sound);

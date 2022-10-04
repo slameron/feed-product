@@ -37,6 +37,8 @@ class DefaultState extends FlxTransitionableState
 
 	function loadEnts()
 	{
+		var interp = new hscript.Interp();
+		var parser = new hscript.Parser();
 		loader.loadEntities(e ->
 		{
 			switch (e.name)
@@ -44,15 +46,29 @@ class DefaultState extends FlxTransitionableState
 				default:
 					interactables.add(new Interactable(e.x, e.y, getEntityGraphic(e.name), spr ->
 					{
-						if (e.values.SwitchState)
-							FlxG.switchState(new State);
+						if (e.values.SwitchState == true)
+						{
+							switch (e.values.State)
+							{
+								case "SpaceStation": FlxG.switchState(new SpaceStation());
+								case "DefaultState": FlxG.switchState(new DefaultState());
+								case "PlayState": FlxG.switchState(new PlayState());
+							}
+						}
+						else // This will need to undergo way more testing, i have no idea why this doesn't work
+						{
+							interp.variables.set('spr', spr);
+							interp.variables.set('FlxG', FlxG);
+							var testFunc:FlxSprite->Void = spr ->
+							{
+								trace('default');
+							};
+							interp.variables.set('testFunc', testFunc);
+							interp.execute(parser.parseString('testFunc = spr -> {${e.values.OnInteract}}'));
+							interp.variables.get('testFunc')(spr);
+						}
 					}));
 			}
 		}, 'ents_fg');
 	}
-}
-
-enum abstract State(String)
-{
-	var DefaultState = 'DefaultState';
 }
