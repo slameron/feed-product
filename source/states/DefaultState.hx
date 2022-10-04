@@ -16,6 +16,9 @@ class DefaultState extends FlxTransitionableState
 	{
 		super.update(elapsed);
 		Sound.updateSounds(elapsed);
+
+		if (FlxG.keys.justPressed.ESCAPE && !Std.isOfType(FlxG.state, MenuState) && subState != null)
+			openSubState(new PauseSubstate());
 	}
 
 	/**returns the asset path for the provided entity in Ogmo. 
@@ -37,8 +40,6 @@ class DefaultState extends FlxTransitionableState
 
 	function loadEnts()
 	{
-		var interp = new hscript.Interp();
-		var parser = new hscript.Parser();
 		loader.loadEntities(e ->
 		{
 			switch (e.name)
@@ -57,15 +58,9 @@ class DefaultState extends FlxTransitionableState
 						}
 						else // This will need to undergo way more testing, i have no idea why this doesn't work
 						{
-							interp.variables.set('spr', spr);
-							interp.variables.set('FlxG', FlxG);
-							var testFunc:FlxSprite->Void = spr ->
-							{
-								trace('default');
-							};
-							interp.variables.set('testFunc', testFunc);
-							interp.execute(parser.parseString('testFunc = spr -> {${e.values.OnInteract}}'));
-							interp.variables.get('testFunc')(spr);
+							var func = ConsoleUtil.runExpr(ConsoleUtil.parseCommand('spr -> {${e.values.OnInteract}}'));
+							trace(func);
+							func(spr);
 						}
 					}));
 			}

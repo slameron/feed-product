@@ -11,6 +11,10 @@ class MenuItem extends Text
 	public var onLeft:() -> Void;
 	public var onRight:() -> Void;
 	public var track:String;
+	public var clipSpr:FlxSprite;
+
+	/**if true, `clipSpr` will be calculated from the left, otherwise it does it from the right**/
+	public var clipLeft:Bool = false;
 
 	/**What the text was before being modified by code**/
 	public var sourceText:String;
@@ -49,6 +53,31 @@ class MenuItem extends Text
 
 			text = '$sourceText ${onLeft != null ? '< ${Std.string(parsedExpr)} >' : Std.string(parsedExpr)}';
 			#end
+		}
+
+		if (clipSpr != null)
+		{
+			if (!clipLeft)
+			{
+				if (x + width >= clipSpr.x + clipSpr.width / 2)
+				{
+					var daW = (x + width) - (clipSpr.x + clipSpr.width / 2);
+					daW = FlxMath.bound(daW, 0, width);
+					var rect:FlxRect = new FlxRect(width - daW, 0, daW, height);
+					clipRect = rect;
+				}
+				else
+					clipRect = null;
+			}
+			else if (x <= clipSpr.x + clipSpr.width / 2)
+			{
+				var daW = (clipSpr.x + clipSpr.width / 2) - x;
+				daW = FlxMath.bound(daW, 0, width);
+				var rect:FlxRect = new FlxRect(0, 0, daW, height);
+				clipRect = rect;
+			}
+			else
+				clipRect = null;
 		}
 	}
 

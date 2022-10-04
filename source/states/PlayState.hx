@@ -102,8 +102,6 @@ class PlayState extends DefaultState
 	override public function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		if (FlxG.keys.justPressed.ESCAPE)
-			FlxG.switchState(new MenuState());
 
 		if (FlxG.random.bool(.5))
 			wires.animation.play('spark', true);

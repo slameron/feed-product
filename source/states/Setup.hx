@@ -9,6 +9,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.system.FlxAssets;
 import flixel.system.FlxSound;
 import lime.app.Application;
+import openfl.display3D.textures.Texture;
 import openfl.filters.ShaderFilter;
 import vfx.CrtShader;
 
@@ -27,7 +28,13 @@ class Setup extends DefaultState
 
 	var timeslots = ['morning', 'afternoon', 'evening', 'night'];
 
-	public static var controls:Controls;
+	public static var controls(get, null):Controls;
+
+	static function get_controls():Controls
+	{
+		controls.update(FlxG.elapsed);
+		return controls;
+	}
 
 	override public function create()
 	{

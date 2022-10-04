@@ -30,9 +30,9 @@
 
 	<set name="BUILD_DIR" value="export" />
 	<source path="source" />
-	<assets path="assets" embed="true" />
-	<assets path="assets" exclude="*.ogg" if="html5" embed="true" />
-	<assets path="assets" exclude="*.mp3" unless="html5" embed="true" />
+	<assets path="assets" embed="false" />
+	<assets path="assets" exclude="*.ogg" if="html5" embed="false" />
+	<assets path="assets" exclude="*.mp3" unless="html5" embed="false" />
 	<assets path="assets/fonts" embed='true' />
 
 	<!-- _______________________________ Libraries ______________________________ -->

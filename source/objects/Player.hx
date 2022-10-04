@@ -50,7 +50,6 @@ class Player extends FlxSprite
 
 	override public function update(elapsed:Float)
 	{
-		controls.update(elapsed);
 		FlxG.watch.addQuick('inCutscene', inCutscene);
 
 		if (!dirtyWorkaround)
@@ -62,7 +61,7 @@ class Player extends FlxSprite
 		handleCollisions();
 		super.update(elapsed);
 
-		if (inCutscene)
+		if (inCutscene || FlxG.state.subState != null)
 		{
 			velocity.set();
 			return;
