@@ -16,19 +16,6 @@ class PlayState extends DefaultState
 	{
 		super.create();
 
-		loader = new FlxOgmo3Loader('assets/data/feed.ogmo', 'assets/data/levels/house.json');
-		@:privateAccess
-		var tiles = loader.loadTilemap(StringTools.replace(FlxOgmo3Loader.getTilesetData(loader.project,
-			FlxOgmo3Loader.getTileLayer(loader.level, 'ground').tileset)
-			.path, "..", "assets"),
-			'ground');
-		add(tiles);
-		tiles.setTileProperties(0, NONE, null, null, 2);
-		tiles.setTileProperties(2, ANY, null, null, 2);
-
-		interactables = new FlxTypedGroup();
-		add(interactables);
-		loadEnts();
 		wires = new Interactable(0, 0, 'assets/images/wires.png', guy ->
 		{
 			if (guy.animation.curAnim.name == 'shock')
@@ -95,7 +82,6 @@ class PlayState extends DefaultState
 		add(player = new Player(86, 24.5, 4));
 		player.addCollision(tiles, false);
 
-		tiles.follow(FlxG.camera, 0, true);
 		FlxG.camera.follow(player, PLATFORMER, 0.2);
 	}
 
@@ -113,7 +99,7 @@ class PlayState extends DefaultState
 		player.hoveringSomething = false;
 		FlxG.overlap(player, interactables, (obj1:Player, obj2:Interactable) ->
 		{
-			if (obj1.hoveringSomething || obj1.inCutscene)
+			if (obj1.hoveringSomething || obj1.inCutscene || obj2.onInteract == null)
 				return;
 
 			obj1.hoveringSomething = true;

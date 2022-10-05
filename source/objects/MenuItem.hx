@@ -55,15 +55,16 @@ class MenuItem extends Text
 			#end
 		}
 
+		FlxG.watch.addQuick('infos', 'clipRect: $clipRect, clipLeft: $clipLeft, clipSpr: $clipSpr');
 		if (clipSpr != null)
 		{
-			if (!clipLeft)
+			if (clipLeft)
 			{
 				if (x + width >= clipSpr.x + clipSpr.width / 2)
 				{
 					var daW = (x + width) - (clipSpr.x + clipSpr.width / 2);
 					daW = FlxMath.bound(daW, 0, width);
-					var rect:FlxRect = new FlxRect(width - daW, 0, daW, height);
+					var rect:FlxRect = new FlxRect(0, 0, width - daW, height);
 					clipRect = rect;
 				}
 				else
@@ -73,7 +74,7 @@ class MenuItem extends Text
 			{
 				var daW = (clipSpr.x + clipSpr.width / 2) - x;
 				daW = FlxMath.bound(daW, 0, width);
-				var rect:FlxRect = new FlxRect(0, 0, daW, height);
+				var rect:FlxRect = new FlxRect(width - (width - daW), 0, width - daW, height);
 				clipRect = rect;
 			}
 			else

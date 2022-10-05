@@ -137,7 +137,7 @@ class MenuState extends DefaultState
 					FlxTween.tween(barBottom, {y: FlxG.height + 1}, 1, {ease: FlxEase.cubeIn, startDelay: 1});
 
 					FlxTransitionableState.skipNextTransIn = FlxTransitionableState.skipNextTransOut = true;
-					new FlxTimer().start(.5 + (.3 * items), tmr -> FlxG.switchState(new PlayState()));
+					new FlxTimer().start(.5 + (.3 * items), tmr -> FlxG.switchState(new PlayState('house')));
 				}
 			},
 
