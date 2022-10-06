@@ -62,7 +62,8 @@
           "values": {"SwitchState": true, "State": "PlayState", "OnInteract": ""}
         },
         {"name": "player", "id": 1, "_eid": "98322604", "x": 192, "y": 248, "width": 56, "height": 136, "originX": 0, "originY": 0},
-        {"name": "daShip", "id": 2, "_eid": "98937302", "x": 480, "y": 288, "width": 256, "height": 128, "originX": 0, "originY": 0}
+        {"name": "daShip", "id": 2, "_eid": "98937302", "x": 480, "y": 288, "width": 256, "height": 128, "originX": 0, "originY": 0},
+        {"name": "stars", "id": 3, "_eid": "03228427", "x": 512, "y": 128, "originX": 0, "originY": 0}
       ]
     }
   ]

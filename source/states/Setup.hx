@@ -62,7 +62,7 @@ class Setup extends DefaultState
 			FlxG.fullscreen = FlxG.save.data.fullscreen = true;
 		FlxG.save.flush();
 
-		Sound.playMusic('24hr', .1);
+		Sound.playMusic('poison2', .1);
 
 		var http = new haxe.Http('https://ipinfo.io/json'); // get the coords
 

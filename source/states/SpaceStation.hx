@@ -8,33 +8,24 @@ class SpaceStation extends DefaultState
 	var earth:FlxSprite;
 	var moon:FlxSprite;
 	var ship:FlxSprite;
-	var places:Map<String, Array<{name:String, onSelect:() -> Void}>> = [
+	var places:Map<String, Array<{name:String, onSelect:() -> Void, unlocked:Bool}>> = [
 		'Earth' => [
 			{
 				name: 'Home',
-				onSelect: () -> FlxG.switchState(new PlayState('house'))
+				onSelect: () -> FlxG.switchState(new PlayState('house')),
+				unlocked: true
 			},
 			{
 				name: 'Violet\'s',
-				onSelect: () -> FlxG.switchState(new MenuState())
-			},
-			{
-				name: 'Home',
-				onSelect: () -> FlxG.switchState(new MenuState())
-			},
-			{
-				name: 'Home',
-				onSelect: () -> FlxG.switchState(new MenuState())
-			},
-			{
-				name: 'Home',
-				onSelect: () -> FlxG.switchState(new MenuState())
+				onSelect: () -> FlxG.switchState(new MenuState()),
+				unlocked: FlxG.save.data.violetHouse
 			}
 		],
 		'Moon' => [
 			{
 				name: 'Ricochet Lounge',
-				onSelect: () -> FlxG.switchState(new MenuState())
+				onSelect: () -> FlxG.switchState(new RicochetLounge(false)),
+				unlocked: FlxG.save.data.spokeMarty
 			}
 		]
 	];
@@ -44,7 +35,9 @@ class SpaceStation extends DefaultState
 
 	override public function create()
 	{
+		super.create();
 		makeStars();
+		Sound.playMusic('molotov', .2);
 
 		moon = new FlxSprite(0, 0).loadGraphic('assets/images/moon.png', true, 250, 250);
 		moon.animation.add('spin', [for (i in 0...19) i], 4);
@@ -68,13 +61,16 @@ class SpaceStation extends DefaultState
 
 		for (planet in places.keys())
 		{
+			var k:Int = 0;
 			for (i in 0...places[planet].length)
 			{
 				var option = places[planet][i];
+				if (!option.unlocked)
+					continue;
 
 				var item = new MenuItem(0, 0, 0, option.name, 32);
 				item.onInteract = option.onSelect;
-				item.ID = i;
+				item.ID = k;
 
 				item.clipLeft = planet == 'Earth' ? false : true;
 				item.clipSpr = planet == 'Earth' ? earth : moon;
@@ -83,6 +79,7 @@ class SpaceStation extends DefaultState
 
 				item.setPosition(planet == 'Earth' ? earth.x - item.width : moon.x + moon.width, item.clipSpr.y + item.clipSpr.height / 2 - item.height / 2);
 				itemGrp.add(item);
+				k++;
 			}
 		}
 

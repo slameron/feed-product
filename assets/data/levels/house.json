@@ -59,7 +59,7 @@
           "y": 96,
           "originX": 0,
           "originY": 0,
-          "values": {"SwitchState": true, "State": "SpaceStation", "OnInteract": "FlxG.switchState(new SpaceStation());"}
+          "values": {"SwitchState": true, "State": "DefaultState", "LevelPath": "outside"}
         }
       ]
     }

@@ -35,21 +35,24 @@ class DialogueCutscene extends FlxTypedSpriteGroup<FlxSprite>
 		this.player = plaa;
 		plaa.inCutscene = true;
 
+		var queue:Array<DialogueBox> = [];
 		for (i in 0...lines.length)
 		{
 			var line = lines[i].trim().split('&');
 			for (a in line)
 				a.trim();
 
-			switch (i)
-			{
-				case 0:
-					activeBox = new DialogueBox(line[0] == 'Titus' ? plaa : other, line[1], 0, 0, 32, '', cutscene);
-				default:
-					activeBox = activeBox.chain(new DialogueBox(line[0] == 'Titus' ? plaa : other, line[1], 0, 0, 32, '', cutscene));
-			}
+			queue.push(new DialogueBox(line[0] == 'Titus' ? plaa : other, line[1], 0, 0, 32, '', cutscene));
+		}
+		while (queue.length > 0)
+		{
+			var daBox = queue.shift();
+			var nextBox = queue[0];
 
-			add(activeBox = activeBox.start());
+			if (nextBox != null)
+				daBox.chain(nextBox);
+			else
+				add(activeBox = daBox.start());
 		}
 	}
 
@@ -157,12 +160,11 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 
 	public function start():DialogueBox
 	{
-		started = true;
 		if (parentBox != null)
 		{
 			return parentBox.start();
 		}
-
+		started = true;
 		box.scale.set(0, 0);
 		add(box);
 		FlxTween.tween(box.scale, {x: 1, y: 1}, .25, {

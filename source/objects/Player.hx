@@ -1,7 +1,9 @@
 package objects;
 
 import flixel.FlxObject;
+import flixel.group.FlxGroup;
 import flixel.util.FlxSpriteUtil;
+import flixel.util.typeLimit.OneOfTwo;
 
 /**quick and dirty player class**/
 class Player extends FlxSprite
@@ -9,11 +11,11 @@ class Player extends FlxSprite
 	public var controls(get, never):Controls;
 	public var inCutscene:Bool = false;
 
-	var _wc:Array<FlxObject> = [];
-	var _pc:Array<FlxObject> = [];
+	var _wc:Array<OneOfTwo<FlxObject, FlxGroup>> = [];
+	var _pc:Array<OneOfTwo<FlxObject, FlxGroup>> = [];
 
 	/**Adds `object` to the list of objects the player should collide with. If `player` is true, the object will collide with the entire hitbox of the player, otherwise the collision only checks near the feet (for walking around, etc).**/
-	public function addCollision(object:FlxObject, player:Bool = true)
+	public function addCollision(object:OneOfTwo<FlxObject, FlxGroup>, player:Bool = true)
 		if (player)
 			_pc.push(object);
 		else

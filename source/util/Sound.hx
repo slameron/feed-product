@@ -49,18 +49,73 @@ class Sound
 		return newSound;
 	}
 
-	public static function playMusic(key:String, vol:Float = 1, persist:Bool = true):CustomMus
+	public static function playMusic(key:String, vol:Float = 1, persist:Bool = true, outside:Bool = false, restart:Bool = true):CustomMus
 	{
+		stopMusic();
+		if (musics.get(key) != null)
+		{
+			musics.get(key).play(restart);
+			return musics.get(key);
+		}
 		var newSound:CustomMus = new CustomMus();
 		newSound.loadEmbedded(RetPath.music(key), true);
 		newSound.normal = vol;
+		newSound.volume = 0; // make sure it doesnt peak at first before update
 		newSound.play();
 		newSound.update(0);
 		newSound.persist = persist;
 
 		musics.set(key, newSound);
+		if (outside)
+		{
+			var newSound2:CustomMus = new CustomMus();
+			newSound2.loadEmbedded(RetPath.music('$key-outside'), true);
+			newSound2.normal = vol;
+			newSound2.volume = 0; // make sure it doesnt peak at first before update
+			newSound2.play();
+			newSound2.pause();
+			newSound2.update(0);
+			newSound2.persist = persist;
+			musics.set('$key-outside', newSound2);
+		}
 
 		return newSound;
+	}
+
+	public static function swapOutside(key:String, ?forceOutside:Bool, ?volume:Float)
+	{
+		if (musics.get(key) == null)
+			playMusic(key, volume != null ? volume : 1, true, true);
+
+		if (forceOutside)
+		{
+			musics.get('$key-outside').resume();
+			musics.get('$key-outside').time = musics.get(key).time;
+
+			musics.get('$key').pause();
+		}
+		else
+		{
+			if (musics.get('$key-outside').playing)
+			{
+				musics.get('$key-outside').pause();
+				musics.get('$key').resume();
+				musics.get('$key').time = musics.get('$key-outside').time;
+			}
+			else
+			{
+				musics.get('$key-outside').resume();
+				musics.get('$key').pause();
+				musics.get('$key-outside').time = musics.get('$key').time;
+			}
+		}
+	}
+
+	public static function stopMusic()
+	{
+		for (music in musics)
+			if (music.playing)
+				music.pause();
 	}
 
 	public static function updateSounds(elapsed:Float)
@@ -72,7 +127,7 @@ class Sound
 			if (musics[sound] != null)
 			{
 				musics[sound].update(elapsed);
-				musics[sound].volume = musics[sound].normal * FlxG.save.data.musVol * FlxG.sound.volume;
+				musics[sound].volume = FlxMath.lerp(musics[sound].volume, musics[sound].normal * FlxG.save.data.musVol * FlxG.sound.volume, .2);
 			}
 			else
 				musics.remove(sound);

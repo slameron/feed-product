@@ -8,7 +8,6 @@ import objects.DialogueBox.DialogueCutscene;
 
 class PlayState extends DefaultState
 {
-	var player:Player;
 	var wires:Interactable;
 	var sittingMarty:Interactable;
 
@@ -50,6 +49,8 @@ class PlayState extends DefaultState
 		sittingMarty = new Interactable(0, 0, 'assets/images/martyZap.png', guy ->
 		{
 			add(new DialogueCutscene('letsGetOut', cast(guy, Player), sittingMarty));
+			FlxG.save.data.spokeMarty = true;
+			FlxG.save.flush();
 		}, true, 18, 24);
 		sittingMarty.animation.add('reg', [0]);
 		sittingMarty.animation.add('spark', [for (i in 0...16) 1].concat([for (i in 2...6) i]).concat([for (i in 0...16) (6 + (i % 2))]), 12, false);
@@ -79,10 +80,8 @@ class PlayState extends DefaultState
 		sittingMarty.updateHitbox();
 		sittingMarty.setPosition(wires.x + 10 * 4, 40 * 4);
 
-		add(player = new Player(86, 24.5, 4));
-		player.addCollision(tiles, false);
-
-		FlxG.camera.follow(player, PLATFORMER, 0.2);
+		player.setPosition(86 * 4, (24.5 * 4) + 500);
+		@:privateAccess player.dirtyWorkaround = false;
 	}
 
 	override public function update(elapsed:Float)
@@ -93,20 +92,5 @@ class PlayState extends DefaultState
 			wires.animation.play('spark', true);
 		if (FlxG.random.bool(.25))
 			sittingMarty.animation.play('spark', true);
-
-		interactables.forEach(item -> if (item != null) item.beingHovered = false);
-
-		player.hoveringSomething = false;
-		FlxG.overlap(player, interactables, (obj1:Player, obj2:Interactable) ->
-		{
-			if (obj1.hoveringSomething || obj1.inCutscene || obj2.onInteract == null)
-				return;
-
-			obj1.hoveringSomething = true;
-
-			obj2.beingHovered = true;
-			if (obj1.controls.interact)
-				obj2.onInteract(obj1);
-		});
 	}
 }
