@@ -219,6 +219,11 @@ class DefaultState extends FlxTransitionableState
 		{
 			switch (e.name)
 			{
+				case 'raveLight': if (e.values.Spotlight == true)
+					{
+						var spotlight = new Spotlight(e.x + e.width / 2, e.y + e.height / 2, tiles != null ? tiles : null);
+						foreground.add(spotlight);
+					}
 				default:
 					foreground.add(new FlxSprite(e.x, e.y, getEntityGraphic(e.name)));
 			}
@@ -227,6 +232,11 @@ class DefaultState extends FlxTransitionableState
 		{
 			switch (e.name)
 			{
+				case 'raveLight': if (e.values.Spotlight == true)
+					{
+						var spotlight = new Spotlight(e.x + e.width / 2, e.y + e.height / 2, tiles != null ? tiles : null);
+						foreground.add(spotlight);
+					}
 				default:
 					background.add(new FlxSprite(e.x, e.y, getEntityGraphic(e.name)));
 			}
