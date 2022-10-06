@@ -13,6 +13,9 @@ class RicochetLounge extends DefaultState
 	override public function create()
 	{
 		super.create();
+		makeStars();
+		if (!inside)
+			tiles.setTileProperties(4, ANY, null, null, 2);
 		Sound.swapOutside('pullup', !inside, .3);
 	}
 }

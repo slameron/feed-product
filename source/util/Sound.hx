@@ -84,6 +84,7 @@ class Sound
 
 	public static function swapOutside(key:String, ?forceOutside:Bool, ?volume:Float)
 	{
+		stopMusic(key, true);
 		if (musics.get(key) == null)
 			playMusic(key, volume != null ? volume : 1, true, true);
 
@@ -111,11 +112,22 @@ class Sound
 		}
 	}
 
-	public static function stopMusic()
+	public static function stopMusic(?exception:String, outside:Bool = false)
 	{
 		for (music in musics)
+		{
+			if (exception != null)
+			{
+				if (musics.get(exception) == music)
+					continue;
+
+				if (outside)
+					if (musics.get('$exception-outside') == music)
+						continue;
+			}
 			if (music.playing)
 				music.pause();
+		}
 	}
 
 	public static function updateSounds(elapsed:Float)

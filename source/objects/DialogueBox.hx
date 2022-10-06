@@ -154,6 +154,8 @@ class DialogueBox extends FlxTypedSpriteGroup<FlxSprite>
 			box.x = p.x + p.width / 2 - box.width / 2;
 		}
 
+		box.y = FlxMath.bound(box.y, 40, FlxG.height - box.height - 20);
+
 		txt.setPosition(box.x + box.width / 2 - txt.width / 2, box.y + (size / 4) + 4);
 		txt.text = "";
 	}

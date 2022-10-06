@@ -9,12 +9,16 @@ import flixel.group.FlxGroup;
 import flixel.system.debug.console.ConsoleUtil;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxCollision;
+import flixel.util.FlxSpriteUtil;
 import hscript.Interp;
 import hscript.Parser;
 
 class DefaultState extends FlxTransitionableState
 {
 	var loader:FlxOgmo3Loader;
+	var midground:FlxGroup;
+	var foreground:FlxGroup;
+	var background:FlxGroup;
 	var interactables:FlxTypedGroup<Interactable>;
 	var player:Player;
 
@@ -29,6 +33,12 @@ class DefaultState extends FlxTransitionableState
 		super.create();
 
 		interactables = new FlxTypedGroup();
+		foreground = new FlxGroup();
+		midground = new FlxGroup();
+		background = new FlxGroup();
+		add(background);
+		add(midground);
+		add(foreground);
 
 		if (level != null)
 			player = new Player(0, 0, 4); // make sure it exists before setting position via loading entities
@@ -36,11 +46,11 @@ class DefaultState extends FlxTransitionableState
 		if (level != null)
 			loadTilemap();
 
-		add(interactables);
+		midground.add(interactables);
 
 		if (level != null)
 		{
-			add(player);
+			midground.add(player);
 
 			player.addCollision(tiles, false);
 
@@ -56,7 +66,7 @@ class DefaultState extends FlxTransitionableState
 			FlxOgmo3Loader.getTileLayer(loader.level, 'ground').tileset)
 			.path, "..", "assets"),
 			'ground');
-		add(tiles);
+		midground.add(tiles);
 		tiles.setTileProperties(0, NONE, null, null, 2);
 		tiles.setTileProperties(2, ANY);
 		tiles.setTileProperties(3, NONE);
@@ -126,7 +136,7 @@ class DefaultState extends FlxTransitionableState
 		coolSplash.alpha.set(.1, .7, .1, .7);
 		coolSplash.lifespan.set(time + .5);
 		coolSplash.speed.set(0, FlxG.width / time, 0, 0);
-		insert(0, coolSplash);
+		background.add(coolSplash);
 		coolSplash.active = false;
 
 		coolSplash.start(false, time / amt);
@@ -139,7 +149,22 @@ class DefaultState extends FlxTransitionableState
 		{
 			switch (e.name)
 			{
+				case 'raveLight': if (e.values.Spotlight == true)
+					{
+						var spotlight = new Spotlight(e.x + e.width / 2, e.y + e.height / 2, tiles != null ? tiles : null);
+						foreground.add(spotlight);
+					}
+					else
+					{
+						var light = new FlxSprite(e.x - 100 + e.width / 2, e.y - 100 + e.height / 2).makeGraphic(200, 200, FlxColor.TRANSPARENT);
+						FlxSpriteUtil.drawCircle(light, -1, -1, 100, FlxColor.ORANGE);
+						FlxSpriteUtil.drawCircle(light, -1, -1, 50, FlxColor.YELLOW);
+						FlxSpriteUtil.drawCircle(light, -1, -1, 25, FlxColor.WHITE);
+						light.alpha = .3;
+						foreground.add(light);
+					}
 				case 'player': player.setPosition(e.x, e.y + 500);
+
 				case 'stars': makeStars();
 				case 'daShip':
 					var ship = new Interactable(0, 0, 'assets/images/upcar-old.png', null, true, 32, 16);
@@ -188,6 +213,23 @@ class DefaultState extends FlxTransitionableState
 						}
 					}));
 			}
+		}, 'ents_mg');
+
+		loader.loadEntities(e ->
+		{
+			switch (e.name)
+			{
+				default:
+					foreground.add(new FlxSprite(e.x, e.y, getEntityGraphic(e.name)));
+			}
 		}, 'ents_fg');
+		loader.loadEntities(e ->
+		{
+			switch (e.name)
+			{
+				default:
+					background.add(new FlxSprite(e.x, e.y, getEntityGraphic(e.name)));
+			}
+		}, 'ents_bg');
 	}
 }
