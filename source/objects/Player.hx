@@ -85,11 +85,13 @@ class Player extends FlxSprite
 			FlxG.collide(i, shadow, processGroundCollide);
 
 		for (i in _pc)
-			FlxG.collide(i, this);
+			FlxG.overlap(i, this);
 	}
 
 	function processGroundCollide(a:FlxObject, b:FlxObject)
 		this.setPosition(b.x + b.width / 2 - this.width / 2, b.y + 10 - this.height);
+
+	
 
 	function animationLogic()
 	{

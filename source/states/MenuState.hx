@@ -205,8 +205,6 @@ class MenuState extends DefaultState
 			}
 		];
 
-		bgColor = FlxColor.GRAY;
-
 		barTop = new FlxSprite().makeGraphic(FlxG.width, Std.int(FlxG.height / 8), FlxColor.BLACK);
 		barBottom = new FlxSprite(0, FlxG.height - FlxG.height / 8).makeGraphic(FlxG.width, Std.int(FlxG.height / 8), FlxColor.BLACK);
 

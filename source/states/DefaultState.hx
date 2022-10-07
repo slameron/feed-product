@@ -10,6 +10,7 @@ import flixel.system.debug.console.ConsoleUtil;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxCollision;
 import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxStringUtil;
 import hscript.Interp;
 import hscript.Parser;
 
@@ -21,6 +22,9 @@ class DefaultState extends FlxTransitionableState
 	var background:FlxGroup;
 	var interactables:FlxTypedGroup<Interactable>;
 	var player:Player;
+	var hacker:Hacker;
+
+	var hackerAttack:FlxGroup;
 
 	override public function new(?level:String)
 	{
@@ -47,12 +51,15 @@ class DefaultState extends FlxTransitionableState
 			loadTilemap();
 
 		midground.add(interactables);
+		hackerAttack = new FlxGroup();
+		midground.add(hackerAttack);
 
 		if (level != null)
 		{
 			midground.add(player);
 
 			player.addCollision(tiles, false);
+			player.addCollision(hackerAttack, true);
 
 			FlxG.camera.follow(player, PLATFORMER, 0.2);
 		}
@@ -98,7 +105,7 @@ class DefaultState extends FlxTransitionableState
 		player.hoveringSomething = false;
 		FlxG.overlap(player, interactables, (obj1:Player, obj2:Interactable) ->
 		{
-			if (obj1.hoveringSomething || obj1.inCutscene || obj2.onInteract == null)
+			if (obj1.hoveringSomething || obj1.inCutscene || obj2.onInteract == null || !obj2.canHover)
 				return;
 
 			obj1.hoveringSomething = true;
@@ -149,6 +156,9 @@ class DefaultState extends FlxTransitionableState
 		{
 			switch (e.name)
 			{
+				case 'hacker': midground.add(hacker = new Hacker(e.x, e.y, Std.int(e.width / 17)));
+				case 'violet': interactables.add(new Violet(e.x, e.y, Std.int(e.width / 20), e.values.Dialogue));
+
 				case 'raveLight': if (e.values.Spotlight == true)
 					{
 						var spotlight = new Spotlight(e.x + e.width / 2, e.y + e.height / 2, tiles != null ? tiles : null);

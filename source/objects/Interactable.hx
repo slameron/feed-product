@@ -9,6 +9,7 @@ class Interactable extends FlxSprite
 
 	public var prompt:FlxText;
 	public var beingHovered:Bool = false;
+	public var canHover:Bool = true;
 
 	override public function new(x:Float = 0, y:Float = 0, graphic:FlxGraphicAsset, onInteract:FlxSprite->Void, ?animated:Bool = false, ?width:Int,
 			?height:Int)

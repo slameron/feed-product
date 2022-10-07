@@ -287,6 +287,84 @@
       "values": [
         {"name": "Spotlight", "definition": "Boolean", "display": 2, "defaults": false}
       ]
+    },
+    {
+      "exportID": "11015411",
+      "name": "violet",
+      "limit": -1,
+      "size": {"x": 20, "y": 19},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "Dialogue", "definition": "String", "display": 2, "defaults": "", "maxLength": 0, "trimWhitespace": true}
+      ],
+      "texture": "../images/violet.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAAAXNSR0IArs4c6QAAAWlJREFUOI2dlL9Lw0AUx7+vtGuFgGNIjFD3GNxC8i8o/QN0yS50dHBwLLhnElyLDg4uDo3ZJGS3YEzpKBQsbg7nUC9erpcf9UG4cOQ+7/PeXY4ghGU6DFJkeULyXF10qmC64W/DKQNFmG740A0f4dlKmai1oWh1fzXA7r6D5Db4n6EM09w1iI8AMLHtVqYFcDGfYjGfAgCWcViMWZ7QxLbZME2pDbRU8uOlXZiJdsM0JQA49L7wfj6ohRJQbrzYt+OLGQAgisYEoATbu54pj1NXnuAQMZZxyDQ3oJ2TET7vxnWC65KzPCG+KbyPcpJlHLbaFAIAzxsVH3OgeLCjaEwcqLlB1Z/DAEXJuuErLZtAJUMxu2gLAE8Pz+j1XypYG/GXVOyRZTrMMh32vTpivwZtHgCKkoHihmG9fo1BRXRku4bFTHpn0hy6HPbxlqgSilAmjcrEHQ47OA2byiGF9eaa15tgq/uuKX4AXu6Un7Z7tYQAAAAASUVORK5CYII="
+    },
+    {
+      "exportID": "11215490",
+      "name": "hacker",
+      "limit": -1,
+      "size": {"x": 17, "y": 26},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [],
+      "texture": "../images/hacker.png",
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAaCAYAAABRqrc5AAAAAXNSR0IArs4c6QAAASpJREFUOI2llT1Ow0AQRt9aOUZQolwgTRqqIDoaCiKBEHXKUHEMKjgDioQEBSdIKho3XMCyFe6xFPGuZte73nX4Kv/MPH07Mx4rutKBZ75U9AbQy+VTkrDfPzu5EqJn0wUAZ5MLP6HXkYFYgFFVlwDc394Es7fvnxZU5AJEknMNaGUgVV1iYFVdWsDl3TroZL26cs9E25HZdGHrkaiFo2Bh4Vjc8XzTm/z2MgFQo1jAodn1AmSbi77AQ7NLwpKQXFe9EDl0EuRDJUSZ+Ui5auNsU7KOE3NwEiSmJETW5WTIUCedDzFnRrKcDBm2joshKgD98Nhwfv3xLwjfX6vshFC3RhwnVTMA5MvZJ/5Ls6TkXvn9eWU839hd4kNC0gDyNyKBBpSCRF22UgB/t09nDRqlBeAAAAAASUVORK5CYII="
     }
   ],
   "tilesets": [

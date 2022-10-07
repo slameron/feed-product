@@ -21,12 +21,14 @@ class DialogueCutscene extends FlxTypedSpriteGroup<FlxSprite>
 	public var lines:Array<String>;
 	public var dialogueActive:Bool = false;
 
+	var onComplete:() -> Void;
+
 	public var activeBox:DialogueBox;
 
 	var player:Player;
 
 	/**@param path Path to the text file you want, relative to `assets/data/dialogue/`. Automatically appends .txt, don't include it in your path.**/
-	override public function new(path:String, plaa:Player, other:FlxSprite, cutscene:Bool = false)
+	override public function new(path:String, plaa:Player, other:FlxSprite, cutscene:Bool = false, ?onComplete:() -> Void)
 	{
 		super(0, 0);
 		var textfile = 'assets/data/dialogue/$path.txt';
@@ -34,6 +36,7 @@ class DialogueCutscene extends FlxTypedSpriteGroup<FlxSprite>
 		lines = fullText.split('\n');
 		this.player = plaa;
 		plaa.inCutscene = true;
+		this.onComplete = onComplete;
 
 		var queue:Array<DialogueBox> = [];
 		for (i in 0...lines.length)
@@ -59,7 +62,8 @@ class DialogueCutscene extends FlxTypedSpriteGroup<FlxSprite>
 	override public function draw()
 	{
 		super.draw();
-		activeBox.draw();
+		if (activeBox != null)
+			activeBox.draw();
 	}
 
 	override public function update(elapsed:Float)
@@ -78,6 +82,10 @@ class DialogueCutscene extends FlxTypedSpriteGroup<FlxSprite>
 				if (player != null)
 					player.inCutscene = false;
 				player = null;
+				activeBox = null;
+
+				if (onComplete != null)
+					onComplete();
 			}
 		}
 	}
