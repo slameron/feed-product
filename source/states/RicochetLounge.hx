@@ -15,7 +15,12 @@ class RicochetLounge extends DefaultState
 		super.create();
 		makeStars();
 		if (!inside)
+		{
 			tiles.setTileProperties(4, ANY, null, null, 2);
+			FlxG.camera.zoom = 1;
+		}
+		else
+			FlxG.camera.zoom = .6;
 		Sound.swapOutside('pullup', !inside, .3);
 	}
 }
